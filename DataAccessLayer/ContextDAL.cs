@@ -127,6 +127,27 @@ namespace DataAccessLayer
             return proposedReturnValue;
         }
 
+        public int ObtainRoleCount()
+        {
+            int proposedReturnValue = -1;
+            try
+            {
+                EnsureConnected();
+                using(SqlCommand command = new SqlCommand("ObtainRoleCount",_connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    object answer = command.ExecuteScalar();
+                    proposedReturnValue = (int) answer;
+                }
+            }
+            catch(Exception ex) when(Log(ex))
+            {
+
+            }
+
+            return proposedReturnValue;
+        }
+
         #endregion
 
         #region User stuff

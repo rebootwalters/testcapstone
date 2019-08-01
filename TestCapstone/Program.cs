@@ -15,6 +15,8 @@ namespace TestCapstone
             {
                 ctx.ConnectionString = 
     $@"Data Source=.\sqlexpress;Initial Catalog=testcapstone;Integrated Security=True";
+
+                Console.WriteLine(ctx.ObtainRoleCount());
                 Console.WriteLine(ctx.FindRoleByID(5));
                 Console.WriteLine(ctx.FindRoleByID(1));
 
