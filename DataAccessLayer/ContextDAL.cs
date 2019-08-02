@@ -151,7 +151,98 @@ namespace DataAccessLayer
         #endregion
 
         #region User stuff
- 
+        public UserDAL FindUserByID(int UserID)
+        {
+            UserDAL ProposedReturnValue = null;
+            try
+            {
+                EnsureConnected();
+                using (SqlCommand command
+                    = new SqlCommand("FindUserByUserID", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@UserID", UserID);
+                    // need to configure the Text, Type and Parameters
+                    // text was configured in the ctor (Line 58)
+                    // type in line 60
+                    // parameters in line 61
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        UserMapper m = new UserMapper(reader);
+                        int count = 0;
+                        while (reader.Read())
+                        {
+                            ProposedReturnValue = m.UserFromReader(reader);
+                            count++;
+                        }
+                        if (count > 1)
+                        {
+                            throw new
+                              Exception($"Found more than 1 User with key {UserID}");
+
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
+
+            }
+            return ProposedReturnValue;
+
+        }
+
+        public List<UserDAL> GetUsers(int skip, int take)
+        {
+            List<UserDAL> proposedReturnValue = new List<UserDAL>();
+            try
+            {
+                EnsureConnected();
+                using (SqlCommand command = new SqlCommand("GetUsers", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Skip", skip);
+                    command.Parameters.AddWithValue("@Take", take);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        UserMapper m = new UserMapper(reader);
+                        while (reader.Read())
+                        {
+                            UserDAL r = m.UserFromReader(reader);
+                            proposedReturnValue.Add(r);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
+
+            }
+            return proposedReturnValue;
+        }
+
+        public int ObtainUserCount()
+        {
+            int proposedReturnValue = -1;
+            try
+            {
+                EnsureConnected();
+                using (SqlCommand command = new SqlCommand("ObtainUserCount", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    object answer = command.ExecuteScalar();
+                    proposedReturnValue = (int)answer;
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
+
+            }
+
+            return proposedReturnValue;
+        }
+
         #endregion
 
 
