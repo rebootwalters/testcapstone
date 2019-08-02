@@ -21,7 +21,7 @@ namespace BusinessLogicLayer
             this.RoleID = dal.RoleID;
             this.RoleName = dal.RoleName;
             this.Salt = dal.Salt;
-            this.UserID = dal.UserID
+            this.UserID = dal.UserID;
 
         }
         #region Direct properties

@@ -26,5 +26,14 @@ namespace TestCapstoneWeb.Controllers
 
             return View();
         }
+
+        public ActionResult Roles()
+        {
+            using (BusinessLogicLayer.ContextBLL ctx = new BusinessLogicLayer.ContextBLL())
+            {
+                List<BusinessLogicLayer.RoleBLL> model = ctx.GetRoles(0, 100);
+                return View(model);
+            }
+        }
     }
 }

@@ -7,7 +7,7 @@ using DataAccessLayer;
 
 namespace BusinessLogicLayer
 {
-    class ContextBLL :IDisposable
+    public class ContextBLL :IDisposable
     {
         DataAccessLayer.ContextDAL context = new DataAccessLayer.ContextDAL();
 
