@@ -20,7 +20,7 @@ namespace TestCapstone
                 Console.WriteLine(ctx.FindRoleByID(5));
                 Console.WriteLine(ctx.FindRoleByID(1));
 
-                List<RoleDAL> answer = ctx.GetRoles(0, 100);
+                List<UserDAL> answer = ctx.GetUsers(0, 100);
                 Console.WriteLine("***********");
                 foreach (var x in answer)
                 {

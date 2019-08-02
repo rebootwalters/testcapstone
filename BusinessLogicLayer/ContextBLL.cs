@@ -59,5 +59,45 @@ namespace BusinessLogicLayer
             }
             return ProposedReturnValue;
         }
+
+        public int ObtainRoleCount()
+        {
+            int proposedReturnValue = 0;
+            proposedReturnValue = context.ObtainRoleCount();
+            return proposedReturnValue;
+        }
+
+
+
+
+        public UserBLL FindUserByID(int UserID)
+        {
+            UserBLL ProposedReturnValue = null;
+            UserDAL DataLayerObject = context.FindUserByID(UserID);
+            if (null != DataLayerObject)
+            {
+                ProposedReturnValue = new UserBLL(DataLayerObject);
+            }
+            return ProposedReturnValue;
+        }
+
+        public List<UserBLL> GetUsers(int skip, int take)
+        {
+            List<UserBLL> ProposedReturnValue = new List<UserBLL>();
+            List<UserDAL> ListOfDataLayerObjects = context.GetUsers(skip, take);
+            foreach (UserDAL User in ListOfDataLayerObjects)
+            {
+                UserBLL BusinessObject = new UserBLL(User);
+                ProposedReturnValue.Add(BusinessObject);
+            }
+            return ProposedReturnValue;
+        }
+
+        public int ObtainUserCount()
+        {
+            int proposedReturnValue = 0;
+            proposedReturnValue = context.ObtainUserCount();
+            return proposedReturnValue;
+        }
     }
 }

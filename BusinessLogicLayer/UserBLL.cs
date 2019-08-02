@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataAccessLayer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,21 @@ namespace BusinessLogicLayer
 {
     public class UserBLL
     {
+
+        public UserBLL(UserDAL dal)
+        {
+            // this.Age = dal.age;  // this.age is BLL only
+            this.DateOfBirth = dal.DateOfBirth;
+            this.EMail = dal.EMail;
+            this.Hash = dal.Hash;
+            //this.isAbleToPurchaseCigarettes = dal.isAbleToPurchaseCigarettes
+            // this.isAbleToPurchaseCiggarettes is BLL only
+            this.RoleID = dal.RoleID;
+            this.RoleName = dal.RoleName;
+            this.Salt = dal.Salt;
+            this.UserID = dal.UserID
+
+        }
         #region Direct properties
         public int UserID { get; set; }
         public string EMail { get; set; }
