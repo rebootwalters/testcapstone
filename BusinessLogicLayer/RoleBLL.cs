@@ -8,8 +8,15 @@ namespace BusinessLogicLayer
 {
     public class RoleBLL
     {
+        
+        [System.ComponentModel.DataAnnotations.Display(Name ="Brians Display")]
         public int RoleID { get; set; }
         public string RoleName { get; set; }
+
+        public RoleBLL()
+        {
+
+        }
 
         public RoleBLL(DataAccessLayer.RoleDAL dal)
         {

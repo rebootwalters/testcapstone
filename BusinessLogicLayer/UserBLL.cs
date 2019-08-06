@@ -17,7 +17,7 @@ namespace BusinessLogicLayer
             this.EMail = dal.EMail;
             this.Hash = dal.Hash;
             //this.isAbleToPurchaseCigarettes = dal.isAbleToPurchaseCigarettes
-            // this.isAbleToPurchaseCiggarettes is BLL only
+            // this.isAbleToPurchaseCigarettes is BLL only
             this.RoleID = dal.RoleID;
             this.RoleName = dal.RoleName;
             this.Salt = dal.Salt;

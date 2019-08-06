@@ -148,6 +148,152 @@ namespace DataAccessLayer
             return proposedReturnValue;
         }
 
+        public int CreateRole(string RoleName)
+        {
+            int proposedReturnValue = -1;
+            try
+            {
+               EnsureConnected();
+               using(SqlCommand command = new SqlCommand("CreateRole",_connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@RoleName", RoleName);
+                    command.Parameters.AddWithValue("@RoleID", 0);
+                    command.Parameters["@RoleID"].Direction = System.Data.ParameterDirection.Output;
+                    command.ExecuteNonQuery();
+                    proposedReturnValue = 
+                        Convert.ToInt32(command.Parameters["@RoleID"].Value);
+                }
+            }
+            catch(Exception ex) when(Log(ex))
+            {
+    
+            }
+            return proposedReturnValue;
+        }
+
+        public void UpdateRole(int RoleID,string RoleName)
+        {
+            
+            try
+            {
+                EnsureConnected();
+            using (SqlCommand command = new SqlCommand("JustUpdateRole", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@RoleName", RoleName);
+                    command.Parameters.AddWithValue("@RoleID", RoleID);
+                  
+                    command.ExecuteNonQuery();
+                    
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
+
+            }
+           
+        }
+
+        public void DeleteRole(int RoleID)
+        {
+
+            try
+            {
+                EnsureConnected();
+                using (SqlCommand command = new SqlCommand("DeleteRole", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                   
+                    command.Parameters.AddWithValue("@RoleID", RoleID);
+
+                    command.ExecuteNonQuery();
+
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
+
+            }
+
+        }
+
+        public int CreateUser(string EMail, string Hash, string Salt, DateTime DateOfBirth, int RoleID)
+        {   int ProposedReturnValue = -1;
+            try
+            {   EnsureConnected();
+                using (SqlCommand command = new SqlCommand("CreateUser", _connection))
+                {  command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@UserID", 0);
+                    command.Parameters.AddWithValue("@EMail", EMail);
+                    command.Parameters.AddWithValue("@Hash", Hash);
+                    command.Parameters.AddWithValue("@Salt", Salt);
+                    command.Parameters.AddWithValue("@DateOfBirth", DateOfBirth);
+                    command.Parameters.AddWithValue("@RoleID", RoleID);
+                    command.Parameters["UserID"].Direction = System.Data.ParameterDirection.Output;
+                    command.ExecuteNonQuery();
+                    ProposedReturnValue = 
+                        Convert.ToInt32(command.Parameters["@UserID"].Value);
+                 }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
+
+            }
+            return ProposedReturnValue;
+        }
+
+        public void UpdateUser(int UserID,string EMail, string Hash, string Salt, DateTime DateOfBirth, int RoleID)
+        {
+
+            try
+            {
+                EnsureConnected();
+                using (SqlCommand command = new SqlCommand("UpdateUser", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@UserID", UserID);
+                    command.Parameters.AddWithValue("@EMail", EMail);
+                    command.Parameters.AddWithValue("@Hash", Hash);
+                    command.Parameters.AddWithValue("@Salt", Salt);
+                    command.Parameters.AddWithValue("@DateOfBirth", DateOfBirth);
+                    command.Parameters.AddWithValue("@RoleID", RoleID);
+
+                    command.ExecuteNonQuery();
+
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
+
+            }
+
+        }
+
+        public void DeleteUser(int UserID)
+        {
+
+            try
+            {
+                EnsureConnected();
+                using (SqlCommand command = new SqlCommand("DeleteUser", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@UserID", UserID);
+
+                    command.ExecuteNonQuery();
+
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
+
+            }
+
+        }
+
         #endregion
 
         #region User stuff
