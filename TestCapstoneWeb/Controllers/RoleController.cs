@@ -77,7 +77,7 @@ namespace TestCapstoneWeb.Controllers
                 // TODO: Add insert logic here
                 using (ContextBLL ctx = new ContextBLL())
                 {
-                    //ctx.
+                    ctx.CreateRole(collection);
                 }
 
                     return RedirectToAction("Index");
@@ -89,9 +89,25 @@ namespace TestCapstoneWeb.Controllers
         }
 
         // GET: Role/Edit/5
-        public ActionResult Edit(int id,int Brian, int Carol)
+        public ActionResult Edit(int id)
         {
-            return View();
+            RoleBLL Role;
+            try
+            {
+                using (ContextBLL ctx = new ContextBLL())
+                {
+                    Role = ctx.FindRoleByID(id);
+                    if (null == Role)
+                    {
+                        return View("ItemNotFound"); // BKW make this view
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return View("Error");
+            }
+            return View(Role);
         }
 
         // POST: Role/Edit/5
@@ -100,20 +116,40 @@ namespace TestCapstoneWeb.Controllers
         {
             try
             {
-                // TODO: Add update logic here
+                // TODO: Add insert logic here
+                using (ContextBLL ctx = new ContextBLL())
+                {
+                    ctx.UpdateRole(collection);
+                }
 
                 return RedirectToAction("Index");
             }
-            catch
+            catch (Exception Ex)
             {
-                return View();
+                return View("Error");
             }
         }
 
         // GET: Role/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            RoleBLL Role;
+            try
+            {
+                using (ContextBLL ctx = new ContextBLL())
+                {
+                    Role = ctx.FindRoleByID(id);
+                    if (null == Role)
+                    {
+                        return View("ItemNotFound"); // BKW make this view
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return View("Error");
+            }
+            return View(Role);
         }
 
         // POST: Role/Delete/5
@@ -122,13 +158,17 @@ namespace TestCapstoneWeb.Controllers
         {
             try
             {
-                // TODO: Add delete logic here
+                // TODO: Add insert logic here
+                using (ContextBLL ctx = new ContextBLL())
+                {
+                    ctx.DeleteRole(id);
+                }
 
                 return RedirectToAction("Index");
             }
-            catch
+            catch (Exception Ex)
             {
-                return View();
+                return View("Error");
             }
         }
     }
