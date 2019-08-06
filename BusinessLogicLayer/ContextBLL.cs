@@ -80,7 +80,27 @@ namespace BusinessLogicLayer
             return proposedReturnValue;
         }
 
+        public void UpdateRole(int RoleID, string RoleName)
+        {
+           
+           _context.UpdateRole(RoleID,RoleName);
+          
+        }
+        public void UpdateRole(RoleBLL Role)
+        {
 
+            _context.UpdateRole(Role.RoleID, Role.RoleName);
+
+        }
+
+        public void DeleteRole(int RoleID)
+        {
+            _context.DeleteRole(RoleID);
+        }
+        public void DeleteRole(RoleBLL Role)
+        {
+            _context.DeleteRole(Role.RoleID);
+        }
 
         public int CreateUser(string EMail,string Hash, string Salt, DateTime DateOfBirth, int RoleID)
         {
@@ -96,13 +116,18 @@ namespace BusinessLogicLayer
             return proposedReturnValue;
         }
 
-        public void DeleteRole(int RoleID)
+        public void UpdateUser(int UserID, string EMail, string Hash, string Salt, DateTime DateOfBirth, int RoleID)
         {
-            _context.DeleteRole(RoleID);
+           
+            _context.UpdateUser(UserID,EMail, Hash, Salt, DateOfBirth, RoleID);
+           
         }
-        public void DeleteRole(RoleBLL Role)
+
+        public void UpdateUser(UserBLL user)
         {
-            _context.DeleteRole(Role.RoleID);
+            
+             _context.UpdateUser(user.UserID,user.EMail, user.Hash, user.Salt, user.DateOfBirth, user.RoleID);
+           
         }
 
         public void DeleteUser(int UserID)
