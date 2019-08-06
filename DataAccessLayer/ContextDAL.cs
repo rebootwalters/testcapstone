@@ -11,7 +11,7 @@ namespace DataAccessLayer
     {
         #region Context stuff
         SqlConnection _connection;
-        public  ContextDAL()
+        public ContextDAL()
         {
             _connection = new SqlConnection();
         }
@@ -24,7 +24,7 @@ namespace DataAccessLayer
         {
             if (_connection.State == System.Data.ConnectionState.Open)
             {
-               // there is nothing to do if I am connected
+                // there is nothing to do if I am connected
             }
             else if (_connection.State == System.Data.ConnectionState.Broken)
             {
@@ -62,8 +62,8 @@ namespace DataAccessLayer
             try
             {
                 EnsureConnected();
-                using (SqlCommand command 
-                    = new SqlCommand("FindRoleByRoleID",_connection))
+                using (SqlCommand command
+                    = new SqlCommand("FindRoleByRoleID", _connection))
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@RoleID", RoleID);
@@ -85,12 +85,12 @@ namespace DataAccessLayer
                         {
                             throw new
                               Exception($"Found more than 1 Role with key {RoleID}");
-                            
+
                         }
                     }
                 }
             }
-            catch (Exception ex) when(Log(ex))
+            catch (Exception ex) when (Log(ex))
             {
 
             }
@@ -112,7 +112,7 @@ namespace DataAccessLayer
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         RoleMapper m = new RoleMapper(reader);
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             RoleDAL r = m.RoleFromReader(reader);
                             proposedReturnValue.Add(r);
@@ -122,7 +122,7 @@ namespace DataAccessLayer
             }
             catch (Exception ex) when (Log(ex))
             {
-               
+
             }
             return proposedReturnValue;
         }
@@ -133,14 +133,14 @@ namespace DataAccessLayer
             try
             {
                 EnsureConnected();
-                using(SqlCommand command = new SqlCommand("ObtainRoleCount",_connection))
+                using (SqlCommand command = new SqlCommand("ObtainRoleCount", _connection))
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     object answer = command.ExecuteScalar();
-                    proposedReturnValue = (int) answer;
+                    proposedReturnValue = (int)answer;
                 }
             }
-            catch(Exception ex) when(Log(ex))
+            catch (Exception ex) when (Log(ex))
             {
 
             }
@@ -153,46 +153,46 @@ namespace DataAccessLayer
             int proposedReturnValue = -1;
             try
             {
-               EnsureConnected();
-               using(SqlCommand command = new SqlCommand("CreateRole",_connection))
+                EnsureConnected();
+                using (SqlCommand command = new SqlCommand("CreateRole", _connection))
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@RoleName", RoleName);
                     command.Parameters.AddWithValue("@RoleID", 0);
                     command.Parameters["@RoleID"].Direction = System.Data.ParameterDirection.Output;
                     command.ExecuteNonQuery();
-                    proposedReturnValue = 
+                    proposedReturnValue =
                         Convert.ToInt32(command.Parameters["@RoleID"].Value);
-                }
-            }
-            catch(Exception ex) when(Log(ex))
-            {
-    
-            }
-            return proposedReturnValue;
-        }
-
-        public void UpdateRole(int RoleID,string RoleName)
-        {
-            
-            try
-            {
-                EnsureConnected();
-            using (SqlCommand command = new SqlCommand("JustUpdateRole", _connection))
-                {
-                    command.CommandType = System.Data.CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@RoleName", RoleName);
-                    command.Parameters.AddWithValue("@RoleID", RoleID);
-                  
-                    command.ExecuteNonQuery();
-                    
                 }
             }
             catch (Exception ex) when (Log(ex))
             {
 
             }
-           
+            return proposedReturnValue;
+        }
+
+        public void UpdateRole(int RoleID, string RoleName)
+        {
+
+            try
+            {
+                EnsureConnected();
+                using (SqlCommand command = new SqlCommand("JustUpdateRole", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@RoleName", RoleName);
+                    command.Parameters.AddWithValue("@RoleID", RoleID);
+
+                    command.ExecuteNonQuery();
+
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
+
+            }
+
         }
 
         public void DeleteRole(int RoleID)
@@ -204,7 +204,7 @@ namespace DataAccessLayer
                 using (SqlCommand command = new SqlCommand("DeleteRole", _connection))
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
-                   
+
                     command.Parameters.AddWithValue("@RoleID", RoleID);
 
                     command.ExecuteNonQuery();
@@ -219,11 +219,14 @@ namespace DataAccessLayer
         }
 
         public int CreateUser(string EMail, string Hash, string Salt, DateTime DateOfBirth, int RoleID)
-        {   int ProposedReturnValue = -1;
+        {
+            int ProposedReturnValue = -1;
             try
-            {   EnsureConnected();
+            {
+                EnsureConnected();
                 using (SqlCommand command = new SqlCommand("CreateUser", _connection))
-                {  command.CommandType = System.Data.CommandType.StoredProcedure;
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@UserID", 0);
                     command.Parameters.AddWithValue("@EMail", EMail);
                     command.Parameters.AddWithValue("@Hash", Hash);
@@ -232,9 +235,9 @@ namespace DataAccessLayer
                     command.Parameters.AddWithValue("@RoleID", RoleID);
                     command.Parameters["UserID"].Direction = System.Data.ParameterDirection.Output;
                     command.ExecuteNonQuery();
-                    ProposedReturnValue = 
+                    ProposedReturnValue =
                         Convert.ToInt32(command.Parameters["@UserID"].Value);
-                 }
+                }
             }
             catch (Exception ex) when (Log(ex))
             {
@@ -243,13 +246,13 @@ namespace DataAccessLayer
             return ProposedReturnValue;
         }
 
-        public void UpdateUser(int UserID,string EMail, string Hash, string Salt, DateTime DateOfBirth, int RoleID)
+        public void UpdateUser(int UserID, string EMail, string Hash, string Salt, DateTime DateOfBirth, int RoleID)
         {
 
             try
             {
                 EnsureConnected();
-                using (SqlCommand command = new SqlCommand("UpdateUser", _connection))
+                using (SqlCommand command = new SqlCommand("JustUpdateUser", _connection))
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
 

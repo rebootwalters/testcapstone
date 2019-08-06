@@ -4,12 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace BusinessLogicLayer
 {
     public class UserBLL
     {
+        public UserBLL()
+        {
 
+        }
         public UserBLL(UserDAL dal)
         {
             // this.Age = dal.age;  // this.age is BLL only
@@ -25,11 +29,18 @@ namespace BusinessLogicLayer
 
         }
         #region Direct properties
+        
+        [System.Web.Mvc.HiddenInput(DisplayValue =false)]
+        
         public int UserID { get; set; }
         public string EMail { get; set; }
         public string Hash { get; set; }
         public string Salt { get; set; }
+        
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime DateOfBirth { get; set; }
+        [System.Web.Mvc.HiddenInput(DisplayValue = false)]
         public int RoleID { get; set; }
         #endregion
         #region Indirect Properties
@@ -40,7 +51,7 @@ namespace BusinessLogicLayer
         public int Age
         {
             get
-            { return (int)((DateOfBirth - DateTime.Now).Days/365.25); }
+            { return (int)((DateTime.Now - DateOfBirth).Days/365.25); }
         }
 
         public bool isAbleToPurchaseCigarettes

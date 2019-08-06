@@ -7,32 +7,39 @@ using BusinessLogicLayer;
 
 namespace TestCapstoneWeb.Controllers
 {
-    public class RoleController : Controller
+    public class UserController : Controller
     {
-        // GET: Role
-        public ActionResult Index()
+
+        List<SelectListItem> GetRoleItems()
         {
-            // return View(object);  // object is the MODEL
-            // View("String",object) // object is the MODEL,  string is the VIEW NAME
-            // View("String") // no MODEL but Name of View is String
-            //RoleBLL r1 = new RoleBLL();
-            //r1.RoleID = 1000;
-            //r1.RoleName = "Brian";
-            //RoleBLL r2 = new RoleBLL();
-            //r2.RoleID = 1001;
-            //r2.RoleName = "Carol";
-            //
-            //Model.Add(r1);
-            //Model.Add(r2);
-            List<RoleBLL> Model = new List<RoleBLL>();
-            try
+            List<SelectListItem> ProposedReturnValue = new List<SelectListItem>();
+            using (ContextBLL ctx = new ContextBLL())
             {
-                using(ContextBLL ctx = new ContextBLL())
+                List<RoleBLL> roles = ctx.GetRoles(0, 25);
+                foreach (RoleBLL r in roles)
                 {
-                  Model =   ctx.GetRoles(0, 20);
+                    SelectListItem i = new SelectListItem();
+                    
+                    i.Value = r.RoleID.ToString();
+                    i.Text = r.RoleName;
+                    ProposedReturnValue.Add(i);
                 }
             }
-            catch(Exception ex)
+            return ProposedReturnValue;
+        }
+        // GET: User
+        public ActionResult Index()
+        {
+ 
+            List<UserBLL> Model = new List<UserBLL>();
+            try
+            {
+                using (ContextBLL ctx = new ContextBLL())
+                {
+                    Model = ctx.GetUsers(0, 20);
+                }
+            }
+            catch (Exception ex)
             {
                 ViewBag.Exception = ex;
                 return View("Error");
@@ -44,13 +51,13 @@ namespace TestCapstoneWeb.Controllers
         // GET: Role/Details/5
         public ActionResult Details(int id)
         {
-            RoleBLL Role;
+            UserBLL User;
             try
             {
-                using(ContextBLL ctx = new ContextBLL())
+                using (ContextBLL ctx = new ContextBLL())
                 {
-                    Role = ctx.FindRoleByID(id);
-                    if (null == Role)
+                    User = ctx.FindUserByID(id);
+                    if (null == User)
                     {
                         return View("ItemNotFound"); // BKW make this view
                     }
@@ -61,30 +68,31 @@ namespace TestCapstoneWeb.Controllers
                 ViewBag.Exception = ex;
                 return View("Error");
             }
-            return View(Role) ;
+            return View(User);
         }
 
         // GET: Role/Create
         public ActionResult Create()
         {
-            RoleBLL defRole = new RoleBLL();
-            defRole.RoleID = 0;
-            return View(defRole);
+            UserBLL defUser = new UserBLL();
+            defUser.UserID = 0;
+            ViewBag.Roles = GetRoleItems();
+            return View(defUser);
         }
 
         // POST: Role/Create
         [HttpPost]
-        public ActionResult Create(BusinessLogicLayer.RoleBLL collection)
+        public ActionResult Create(BusinessLogicLayer.UserBLL collection)
         {
             try
             {
                 // TODO: Add insert logic here
                 using (ContextBLL ctx = new ContextBLL())
                 {
-                    ctx.CreateRole(collection);
+                    ctx.CreateUser(collection);
                 }
 
-                    return RedirectToAction("Index");
+                return RedirectToAction("Index");
             }
             catch (Exception Ex)
             {
@@ -96,13 +104,13 @@ namespace TestCapstoneWeb.Controllers
         // GET: Role/Edit/5
         public ActionResult Edit(int id)
         {
-            RoleBLL Role;
+            UserBLL User;
             try
             {
                 using (ContextBLL ctx = new ContextBLL())
                 {
-                    Role = ctx.FindRoleByID(id);
-                    if (null == Role)
+                    User = ctx.FindUserByID(id);
+                    if (null == User)
                     {
                         return View("ItemNotFound"); // BKW make this view
                     }
@@ -110,21 +118,23 @@ namespace TestCapstoneWeb.Controllers
             }
             catch (Exception ex)
             {
+                ViewBag.Exception = ex;
                 return View("Error");
             }
-            return View(Role);
+            ViewBag.Roles = GetRoleItems();
+            return View(User);
         }
 
         // POST: Role/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, BusinessLogicLayer.RoleBLL collection)
+        public ActionResult Edit(int id, BusinessLogicLayer.UserBLL collection)
         {
             try
             {
                 // TODO: Add insert logic here
                 using (ContextBLL ctx = new ContextBLL())
                 {
-                    ctx.UpdateRole(collection);
+                    ctx.UpdateUser(collection);
                 }
 
                 return RedirectToAction("Index");
@@ -139,13 +149,13 @@ namespace TestCapstoneWeb.Controllers
         // GET: Role/Delete/5
         public ActionResult Delete(int id)
         {
-            RoleBLL Role;
+            UserBLL User;
             try
             {
                 using (ContextBLL ctx = new ContextBLL())
                 {
-                    Role = ctx.FindRoleByID(id);
-                    if (null == Role)
+                    User = ctx.FindUserByID(id);
+                    if (null == User)
                     {
                         return View("ItemNotFound"); // BKW make this view
                     }
@@ -156,19 +166,19 @@ namespace TestCapstoneWeb.Controllers
                 ViewBag.Exception = ex;
                 return View("Error");
             }
-            return View(Role);
+            return View(User);
         }
 
         // POST: Role/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, BusinessLogicLayer.RoleBLL collection)
+        public ActionResult Delete(int id, BusinessLogicLayer.UserBLL collection)
         {
             try
             {
                 // TODO: Add insert logic here
                 using (ContextBLL ctx = new ContextBLL())
                 {
-                    ctx.DeleteRole(id);
+                    ctx.DeleteUser(id);
                 }
 
                 return RedirectToAction("Index");
