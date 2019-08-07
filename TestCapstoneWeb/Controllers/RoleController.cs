@@ -9,6 +9,31 @@ namespace TestCapstoneWeb.Controllers
 {
     public class RoleController : Controller
     {
+
+        public ActionResult Page(int? PageNumber, int? PageSize)
+        {
+            int PageN = (PageNumber.HasValue) ? PageNumber.Value : 0;
+            int PageS = (PageSize.HasValue) ? PageSize.Value : ApplicationConfig.DefaultPageSize;
+            ViewBag.PageNumber = PageNumber;
+            ViewBag.PageSize = PageSize;
+            List<RoleBLL> Model = new List<RoleBLL>();
+            try
+            {
+                using (ContextBLL ctx = new ContextBLL())
+                {
+                    ViewBag.TotalRoleCount = ctx.ObtainRoleCount();
+                    Model = ctx.GetRoles(PageN*PageS, PageS);
+                }
+                return View("Index",Model);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Exception = ex;
+                return View("Error");
+            }
+
+        }
+
         // GET: Role
         public ActionResult Index()
         {
@@ -29,7 +54,10 @@ namespace TestCapstoneWeb.Controllers
             {
                 using(ContextBLL ctx = new ContextBLL())
                 {
-                  Model =   ctx.GetRoles(0, 20);
+                    ViewBag.PageNumber = 0;
+                    ViewBag.PageSize = ApplicationConfig.DefaultPageSize;
+                    ViewBag.TotalRoleCount = ctx.ObtainRoleCount();
+                    Model =   ctx.GetRoles(0, ViewBag.PageSize);
                 }
             }
             catch(Exception ex)

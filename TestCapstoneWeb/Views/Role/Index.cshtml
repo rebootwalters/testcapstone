@@ -2,6 +2,11 @@
 
 @{
     ViewBag.Title = "Roles";
+    int PageNumber = ViewBag.PageNumber;
+    int PageSize = ViewBag.PageSize;
+    int TotalRoleCount = ViewBag.TotalRoleCount;
+    int TotalPageButtonCount = 1 + TotalRoleCount / PageSize;
+    int CorrectedPageButtonCount = (TotalPageButtonCount > 9) ? 10 : TotalPageButtonCount;
 }
 
 <h2>Index</h2>
@@ -9,6 +14,17 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+
+@{
+    for (int i = 0; i < CorrectedPageButtonCount; i++)
+    {
+        string classstring = (i == PageNumber) ? "btn btn-sm btn-success glyphicon glyphicon-star-empty" : "btn btn-sm btn-normal glyphicon glyphicon-asterisk";
+        @Html.ActionLink($"-Page {i}-", "Page", new { PageNumber = i, PageSize = PageSize },
+       new { @class = classstring });
+
+    }
+
+}<p></p>
 <table class="table">
     <tr>
         <th>
@@ -20,21 +36,24 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.RoleID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.RoleName)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.RoleID, Brian = 101, Carol = 102 }) |
-            @Html.ActionLink("Details", "Details", new { id = item.RoleID }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.RoleID }) |
-            @Html.ActionLink("Whatever", "Whatever", new { id = item.RoleID })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RoleID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RoleName)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.RoleID, Brian = 101, Carol = 102 }) |
+                @Html.ActionLink("Details", "Details", new { id = item.RoleID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.RoleID }) |
+                @Html.ActionLink("Whatever", "Whatever", new { id = item.RoleID })
+            </td>
+        </tr>
+    }
 
 </table>
+
+
