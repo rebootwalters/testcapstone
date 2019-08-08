@@ -233,7 +233,7 @@ namespace DataAccessLayer
                     command.Parameters.AddWithValue("@Salt", Salt);
                     command.Parameters.AddWithValue("@DateOfBirth", DateOfBirth);
                     command.Parameters.AddWithValue("@RoleID", RoleID);
-                    command.Parameters["UserID"].Direction = System.Data.ParameterDirection.Output;
+                    command.Parameters["@UserID"].Direction = System.Data.ParameterDirection.Output;
                     command.ExecuteNonQuery();
                     ProposedReturnValue =
                         Convert.ToInt32(command.Parameters["@UserID"].Value);
