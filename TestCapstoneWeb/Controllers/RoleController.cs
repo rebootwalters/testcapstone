@@ -21,7 +21,7 @@ namespace TestCapstoneWeb.Controllers
             {
                 using (ContextBLL ctx = new ContextBLL())
                 {
-                    ViewBag.TotalRoleCount = ctx.ObtainRoleCount();
+                    ViewBag.TotalCount = ctx.ObtainRoleCount();
                     Model = ctx.GetRoles(PageN*PageS, PageS);
                 }
                 return View("Index",Model);
@@ -56,7 +56,7 @@ namespace TestCapstoneWeb.Controllers
                 {
                     ViewBag.PageNumber = 0;
                     ViewBag.PageSize = ApplicationConfig.DefaultPageSize;
-                    ViewBag.TotalRoleCount = ctx.ObtainRoleCount();
+                    ViewBag.TotalCount = ctx.ObtainRoleCount();
                     Model =   ctx.GetRoles(0, ViewBag.PageSize);
                 }
             }
@@ -138,6 +138,7 @@ namespace TestCapstoneWeb.Controllers
             }
             catch (Exception ex)
             {
+                ViewBag.Exception = ex;
                 return View("Error");
             }
             return View(Role);

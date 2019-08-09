@@ -22,5 +22,13 @@ namespace TestCapstoneWeb
 
            
         }
+
+        protected void Application_Error(object sender, EventArgs e)
+        {
+            var ex = Server.GetLastError();
+            if (ex is System.Threading.ThreadAbortException)
+                return; // Redirects may cause this exception..
+            Lumberjack.Logger.Log(ex);
+        }
     }
 }

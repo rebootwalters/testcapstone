@@ -37,6 +37,25 @@ namespace BusinessLogicLayer
             }
         }
 
+        public void GenerateNotConnected()
+        {
+            _context.GenerateNotConnected();
+           
+        }
+
+        public void GenerateStoredProcedureNotFound()
+        {
+            
+                _context.GenerateStoredProcedureNotFound();
+            
+        }
+
+        public void GenerateParameterNotIncluded()
+        {
+            _context.GenerateParameterNotIncluded();
+            
+        }
+
         public RoleBLL FindRoleByID(int RoleID)
         {
             RoleBLL ProposedReturnValue = null;

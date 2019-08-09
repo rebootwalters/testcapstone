@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
+using Lumberjack;
 
 namespace DataAccessLayer
 {
@@ -46,6 +47,7 @@ namespace DataAccessLayer
         bool Log(Exception ex)
         {
             Console.WriteLine(ex.ToString());
+            Logger.Log(ex);
             return false;
         }
         public void Dispose()
@@ -54,6 +56,83 @@ namespace DataAccessLayer
         }
 
         #endregion
+
+        #region simulate Exceptions for testing
+        // this region is to create DAL layer Exceptions on purpose in order to test the to see if the exceptions are poperly caught and logged.
+        public int GenerateNotConnected()
+        {
+            int proposedReturnValue = -1;
+            try
+            {
+                // by commenting out the EnsureConnected below, this method MAY throw an
+                // exception IF it is the First call on a ContextDAL
+
+                //EnsureConnected();
+                using (SqlCommand command = new SqlCommand("ObtainRoleCount", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    object answer = command.ExecuteScalar();
+                    proposedReturnValue = (int)answer;
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
+
+            }
+
+            return proposedReturnValue;
+        }
+        public int GenerateStoredProcedureNotFound()
+        {
+            int proposedReturnValue = -1;
+            try
+            {
+                
+
+                EnsureConnected();
+                // the name of the stored procdeure is incorrect, so it should throw an exception
+                using (SqlCommand command = new SqlCommand("XXXX", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    object answer = command.ExecuteScalar();
+                    proposedReturnValue = (int)answer;
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
+
+            }
+
+            return proposedReturnValue;
+        }
+        public int GenerateParameterNotIncluded()
+        {
+            int proposedReturnValue = -1;
+            try
+            {
+
+
+                EnsureConnected();
+                // the parameter to the stored procdeure is incorrect, so it should throw an exception
+                using (SqlCommand command = new SqlCommand("FindRoleByRoleID", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    // the following line is where the parameter name is incorrect
+                    command.Parameters.AddWithValue("@XXXX", 1);
+                    object answer = command.ExecuteReader();
+                    proposedReturnValue = (int)answer;
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
+
+            }
+
+            return proposedReturnValue;
+        }
+
+        #endregion
+
 
         #region Role Stuff
         public RoleDAL FindRoleByID(int RoleID)

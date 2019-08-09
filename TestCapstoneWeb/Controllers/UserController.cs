@@ -27,6 +27,31 @@ namespace TestCapstoneWeb.Controllers
             }
             return ProposedReturnValue;
         }
+
+        public ActionResult Page(int? PageNumber, int? PageSize)
+        {
+            int PageN = (PageNumber.HasValue) ? PageNumber.Value : 0;
+            int PageS = (PageSize.HasValue) ? PageSize.Value : ApplicationConfig.DefaultPageSize;
+            ViewBag.PageNumber = PageNumber;
+            ViewBag.PageSize = PageSize;
+            List<UserBLL> Model = new List<UserBLL>();
+            try
+            {
+                using (ContextBLL ctx = new ContextBLL())
+                {
+                    ViewBag.TotalCount = ctx.ObtainUserCount();
+                    Model = ctx.GetUsers(PageN * PageS, PageS);
+                }
+                return View("Index", Model);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Exception = ex;
+                return View("Error");
+            }
+
+        }
+
         // GET: User
         public ActionResult Index()
         {
@@ -36,7 +61,10 @@ namespace TestCapstoneWeb.Controllers
             {
                 using (ContextBLL ctx = new ContextBLL())
                 {
-                    Model = ctx.GetUsers(0, 20);
+                    ViewBag.PageNumber = 0;
+                    ViewBag.PageSize = ApplicationConfig.DefaultPageSize;
+                    ViewBag.TotalCount = ctx.ObtainUserCount();
+                    Model = ctx.GetUsers(0, ViewBag.PageSize);
                 }
             }
             catch (Exception ex)

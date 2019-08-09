@@ -4,8 +4,8 @@
     ViewBag.Title = "Roles";
     int PageNumber = ViewBag.PageNumber;
     int PageSize = ViewBag.PageSize;
-    int TotalRoleCount = ViewBag.TotalRoleCount;
-    int TotalPageButtonCount = 1 + TotalRoleCount / PageSize;
+    int TotalCount = ViewBag.TotalCount;
+    int TotalPageButtonCount = 1 + TotalCount / PageSize;
     int CorrectedPageButtonCount = (TotalPageButtonCount > 9) ? 10 : TotalPageButtonCount;
 }
 
@@ -23,8 +23,9 @@
        new { @class = classstring });
 
     }
+}
 
-}<p></p>
+<p></p>
 <table class="table">
     <tr>
         <th>
