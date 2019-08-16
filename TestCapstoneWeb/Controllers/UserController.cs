@@ -35,6 +35,7 @@ namespace TestCapstoneWeb.Controllers
             ViewBag.PageNumber = PageNumber;
             ViewBag.PageSize = PageSize;
             List<UserBLL> Model = new List<UserBLL>();
+            
             try
             {
                 using (ContextBLL ctx = new ContextBLL())
