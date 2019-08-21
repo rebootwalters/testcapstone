@@ -28,10 +28,9 @@ namespace TestCapstoneWeb.Controllers
             return ProposedReturnValue;
         }
 
-        public ActionResult Page(int? PageNumber, int? PageSize)
+        public ActionResult Page(int PageNumber, int PageSize)
         {
-            int PageN = (PageNumber.HasValue) ? PageNumber.Value : 0;
-            int PageS = (PageSize.HasValue) ? PageSize.Value : ApplicationConfig.DefaultPageSize;
+          
             ViewBag.PageNumber = PageNumber;
             ViewBag.PageSize = PageSize;
             List<UserBLL> Model = new List<UserBLL>();
@@ -41,7 +40,7 @@ namespace TestCapstoneWeb.Controllers
                 using (ContextBLL ctx = new ContextBLL())
                 {
                     ViewBag.TotalCount = ctx.ObtainUserCount();
-                    Model = ctx.GetUsers(PageN * PageS, PageS);
+                    Model = ctx.GetUsers(PageNumber * PageSize, PageSize);
                 }
                 return View("Index", Model);
             }
@@ -56,25 +55,8 @@ namespace TestCapstoneWeb.Controllers
         // GET: User
         public ActionResult Index()
         {
- 
-            List<UserBLL> Model = new List<UserBLL>();
-            try
-            {
-                using (ContextBLL ctx = new ContextBLL())
-                {
-                    ViewBag.PageNumber = 0;
-                    ViewBag.PageSize = ApplicationConfig.DefaultPageSize;
-                    ViewBag.TotalCount = ctx.ObtainUserCount();
-                    Model = ctx.GetUsers(0, ViewBag.PageSize);
-                }
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Exception = ex;
-                return View("Error");
-            }
 
-            return View(Model); // model is list of roles, name of view is same as method name
+            return RedirectToRoute(new { Controller = "User", Action = "Page", PageNumber = 0, PageSize = ApplicationConfig.DefaultPageSize });
         }
 
         // GET: Role/Details/5

@@ -10,10 +10,9 @@ namespace TestCapstoneWeb.Controllers
     public class RoleController : Controller
     {
 
-        public ActionResult Page(int? PageNumber, int? PageSize)
+        public ActionResult Page(int PageNumber, int PageSize)
         {
-            int PageN = (PageNumber.HasValue) ? PageNumber.Value : 0;
-            int PageS = (PageSize.HasValue) ? PageSize.Value : ApplicationConfig.DefaultPageSize;
+           
             ViewBag.PageNumber = PageNumber;
             ViewBag.PageSize = PageSize;
             List<RoleBLL> Model = new List<RoleBLL>();
@@ -22,7 +21,7 @@ namespace TestCapstoneWeb.Controllers
                 using (ContextBLL ctx = new ContextBLL())
                 {
                     ViewBag.TotalCount = ctx.ObtainRoleCount();
-                    Model = ctx.GetRoles(PageN*PageS, PageS);
+                    Model = ctx.GetRoles(PageNumber*PageSize, PageSize);
                 }
                 return View("Index",Model);
             }
@@ -34,42 +33,12 @@ namespace TestCapstoneWeb.Controllers
 
         }
 
-        // GET: Role
         public ActionResult Index()
         {
-            // return View(object);  // object is the MODEL
-            // View("String",object) // object is the MODEL,  string is the VIEW NAME
-            // View("String") // no MODEL but Name of View is String
-            //RoleBLL r1 = new RoleBLL();
-            //r1.RoleID = 1000;
-            //r1.RoleName = "Brian";
-            //RoleBLL r2 = new RoleBLL();
-            //r2.RoleID = 1001;
-            //r2.RoleName = "Carol";
-            //
-            //Model.Add(r1);
-            //Model.Add(r2);
-            List<RoleBLL> Model = new List<RoleBLL>();
-            try
-            {
-                using(ContextBLL ctx = new ContextBLL())
-                {
-                    ViewBag.PageNumber = 0;
-                    ViewBag.PageSize = ApplicationConfig.DefaultPageSize;
-                    ViewBag.TotalCount = ctx.ObtainRoleCount();
-                    Model =   ctx.GetRoles(0, ViewBag.PageSize);
-                }
-            }
-            catch(Exception ex)
-            {
-                ViewBag.Exception = ex;
-                return View("Error");
-            }
-
-            return View(Model); // model is list of roles, name of view is same as method name
+            return RedirectToRoute(new { Controller = "Role", Action = "Page", PageNumber = 0, PageSize = ApplicationConfig.DefaultPageSize });
         }
 
-        // GET: Role/Details/5
+    
         public ActionResult Details(int id)
         {
             RoleBLL Role;
