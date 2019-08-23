@@ -297,6 +297,144 @@ namespace DataAccessLayer
 
         }
 
+  
+
+        #endregion
+
+        #region User stuff
+        public UserDAL FindUserByID(int UserID)
+        {
+            UserDAL ProposedReturnValue = null;
+            try
+            {
+                EnsureConnected();
+                using (SqlCommand command
+                    = new SqlCommand("FindUserByUserID", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@UserID", UserID);
+                    // need to configure the Text, Type and Parameters
+                    // text was configured in the ctor (Line 58)
+                    // type in line 60
+                    // parameters in line 61
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        UserMapper m = new UserMapper(reader);
+                        int count = 0;
+                        while (reader.Read())
+                        {
+                            ProposedReturnValue = m.UserFromReader(reader);
+                            count++;
+                        }
+                        if (count > 1)
+                        {
+                            throw new
+                              Exception($"Found more than 1 User with key {UserID}");
+
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
+
+            }
+            return ProposedReturnValue;
+
+        }
+        public UserDAL FindUserByEMail(string EMail)
+        {
+            UserDAL ProposedReturnValue = null;
+            try
+            {
+                EnsureConnected();
+                using (SqlCommand command
+                    = new SqlCommand("FindUserByEMail", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@EMail", EMail);
+                    // need to configure the Text, Type and Parameters
+                    // text was configured in the ctor (Line 58)
+                    // type in line 60
+                    // parameters in line 61
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        UserMapper m = new UserMapper(reader);
+                        int count = 0;
+                        while (reader.Read())
+                        {
+                            ProposedReturnValue = m.UserFromReader(reader);
+                            count++;
+                        }
+                        if (count > 1)
+                        {
+                            throw new
+                              Exception($"Found more than 1 User with key {EMail}");
+
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
+
+            }
+            return ProposedReturnValue;
+
+        }
+
+        public List<UserDAL> GetUsers(int skip, int take)
+        {
+            List<UserDAL> proposedReturnValue = new List<UserDAL>();
+            try
+            {
+                EnsureConnected();
+                using (SqlCommand command = new SqlCommand("GetUsers", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Skip", skip);
+                    command.Parameters.AddWithValue("@Take", take);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        UserMapper m = new UserMapper(reader);
+                        while (reader.Read())
+                        {
+                            UserDAL r = m.UserFromReader(reader);
+                            proposedReturnValue.Add(r);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
+
+            }
+            return proposedReturnValue;
+        }
+
+        public int ObtainUserCount()
+        {
+            int proposedReturnValue = -1;
+            try
+            {
+                EnsureConnected();
+                using (SqlCommand command = new SqlCommand("ObtainUserCount", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    object answer = command.ExecuteScalar();
+                    proposedReturnValue = (int)answer;
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
+
+            }
+
+            return proposedReturnValue;
+        }
+
         public int CreateUser(string EMail, string Hash, string Salt, DateTime DateOfBirth, int RoleID)
         {
             int ProposedReturnValue = -1;
@@ -378,18 +516,18 @@ namespace DataAccessLayer
 
         #endregion
 
-        #region User stuff
-        public UserDAL FindUserByID(int UserID)
+        #region OwnedItem stuff
+        public OwnedItemDAL FindOwnedItemByID(int ItemID)
         {
-            UserDAL ProposedReturnValue = null;
+            OwnedItemDAL ProposedReturnValue = null;
             try
             {
                 EnsureConnected();
                 using (SqlCommand command
-                    = new SqlCommand("FindUserByUserID", _connection))
+                    = new SqlCommand("FindOwnedItemByID", _connection))
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@UserID", UserID);
+                    command.Parameters.AddWithValue("@ItemID", ItemID);
                     // need to configure the Text, Type and Parameters
                     // text was configured in the ctor (Line 58)
                     // type in line 60
@@ -397,17 +535,17 @@ namespace DataAccessLayer
 
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        UserMapper m = new UserMapper(reader);
+                        OwnedItemMapper m = new OwnedItemMapper(reader);
                         int count = 0;
                         while (reader.Read())
                         {
-                            ProposedReturnValue = m.UserFromReader(reader);
+                            ProposedReturnValue = m.OwnedItemFromReader(reader);
                             count++;
                         }
                         if (count > 1)
                         {
                             throw new
-                              Exception($"Found more than 1 User with key {UserID}");
+                              Exception($"Found more than 1 User with key {ItemID}");
 
                         }
                     }
@@ -420,24 +558,25 @@ namespace DataAccessLayer
             return ProposedReturnValue;
 
         }
+     
 
-        public List<UserDAL> GetUsers(int skip, int take)
+        public List<OwnedItemDAL> GetOwnedItems(int skip, int take)
         {
-            List<UserDAL> proposedReturnValue = new List<UserDAL>();
+            List<OwnedItemDAL> proposedReturnValue = new List<OwnedItemDAL>();
             try
             {
                 EnsureConnected();
-                using (SqlCommand command = new SqlCommand("GetUsers", _connection))
+                using (SqlCommand command = new SqlCommand("GetOwnedItems", _connection))
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@Skip", skip);
                     command.Parameters.AddWithValue("@Take", take);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        UserMapper m = new UserMapper(reader);
+                        OwnedItemMapper m = new OwnedItemMapper(reader);
                         while (reader.Read())
                         {
-                            UserDAL r = m.UserFromReader(reader);
+                            OwnedItemDAL r = m.OwnedItemFromReader(reader);
                             proposedReturnValue.Add(r);
                         }
                     }
@@ -450,13 +589,13 @@ namespace DataAccessLayer
             return proposedReturnValue;
         }
 
-        public int ObtainUserCount()
+        public int ObtainOwnedItemCount()
         {
             int proposedReturnValue = -1;
             try
             {
                 EnsureConnected();
-                using (SqlCommand command = new SqlCommand("ObtainUserCount", _connection))
+                using (SqlCommand command = new SqlCommand("ObtainItemCount", _connection))
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     object answer = command.ExecuteScalar();
@@ -470,9 +609,100 @@ namespace DataAccessLayer
 
             return proposedReturnValue;
         }
+        public int ObtainCountOfItemsOwnedByUserCount(int UserID)
+        {
+            int proposedReturnValue = -1;
+            try
+            {
+                EnsureConnected();
+                using (SqlCommand command = new SqlCommand("ObtainCountOfItemsOwnedByUserCount", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@UserID", UserID);
+                    object answer = command.ExecuteScalar();
+                    proposedReturnValue = (int)answer;
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
 
+            }
+
+            return proposedReturnValue;
+        }
+
+        public int CreateOwnedItem(int OwnerID, string ItemDescription)
+        {
+            int proposedReturnValue = -1;
+            try
+            {
+                EnsureConnected();
+                using (SqlCommand command = new SqlCommand("CreateOwnedItem", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@OwnerID", OwnerID);
+                    command.Parameters.AddWithValue("@ItemDescription", ItemDescription);
+
+                    command.Parameters.AddWithValue("@OwnedItemID", 0);
+                    command.Parameters["@OwnedItemID"].Direction = System.Data.ParameterDirection.Output;
+                    command.ExecuteNonQuery();
+                    proposedReturnValue =
+                        Convert.ToInt32(command.Parameters["@OwnedItemID"].Value);
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
+
+            }
+            return proposedReturnValue;
+        }
+
+        public void UpdateOwnedItem(int OwnedItemID, int OwnerID, string ItemDescription)
+        {
+
+            try
+            {
+                EnsureConnected();
+                using (SqlCommand command = new SqlCommand("JustUpdateOwnedItem", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@ItemID", OwnedItemID);
+                    command.Parameters.AddWithValue("@OwnerID", OwnerID);
+                    command.Parameters.AddWithValue("@ItemDescription", ItemDescription);
+
+                    command.ExecuteNonQuery();
+
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
+
+            }
+
+        }
+
+        public void DeleteOwnedItem(int ItemID)
+        {
+
+            try
+            {
+                EnsureConnected();
+                using (SqlCommand command = new SqlCommand("DeleteOwnedItem", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@OwnedItemID", ItemID);
+
+                    command.ExecuteNonQuery();
+
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
+
+            }
+
+        }
         #endregion
-
-
     }
 }

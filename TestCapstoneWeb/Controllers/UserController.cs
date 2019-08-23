@@ -7,6 +7,7 @@ using BusinessLogicLayer;
 
 namespace TestCapstoneWeb.Controllers
 {
+    [TestCapstoneWeb.Models.MustBeLoggedIn]
     public class UserController : Controller
     {
 

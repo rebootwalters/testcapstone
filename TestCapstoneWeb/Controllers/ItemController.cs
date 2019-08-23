@@ -1,30 +1,48 @@
-﻿using System;
+﻿using BusinessLogicLayer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using BusinessLogicLayer;
 
 namespace TestCapstoneWeb.Controllers
 {
-    [TestCapstoneWeb.Models.MustBeLoggedIn]
-    public class RoleController : Controller
+    public class ItemController : Controller
     {
 
+        List<SelectListItem> GetUserItems()
+        {
+            List<SelectListItem> ProposedReturnValue = new List<SelectListItem>();
+            using (ContextBLL ctx = new ContextBLL())
+            {
+                List<UserBLL> roles = ctx.GetUsers(0, 100);
+                foreach (UserBLL u in roles)
+                {
+                    SelectListItem i = new SelectListItem();
+
+                    i.Value = u.UserID.ToString();
+                    i.Text = u.EMail;
+                    ProposedReturnValue.Add(i);
+                }
+            }
+            return ProposedReturnValue;
+        }
+        // GET: Item
         public ActionResult Page(int PageNumber, int PageSize)
         {
-           
+
             ViewBag.PageNumber = PageNumber;
             ViewBag.PageSize = PageSize;
-            List<RoleBLL> Model = new List<RoleBLL>();
+            List<OwnedItemBLL> Model = new List<OwnedItemBLL>();
+
             try
             {
                 using (ContextBLL ctx = new ContextBLL())
                 {
-                    ViewBag.TotalCount = ctx.ObtainRoleCount();
-                    Model = ctx.GetRoles(PageNumber*PageSize, PageSize);
+                    ViewBag.TotalCount = ctx.ObtainOwnedItemCount();
+                    Model = ctx.GetOwnedItems(PageNumber * PageSize, PageSize);
                 }
-                return View("Index",Model);
+                return View("Index", Model);
             }
             catch (Exception ex)
             {
@@ -34,21 +52,23 @@ namespace TestCapstoneWeb.Controllers
 
         }
 
+        // GET: User
         public ActionResult Index()
         {
-            return RedirectToRoute(new { Controller = "Role", Action = "Page", PageNumber = 0, PageSize = ApplicationConfig.DefaultPageSize });
+
+            return RedirectToRoute(new { Controller = "Item", Action = "Page", PageNumber = 0, PageSize = ApplicationConfig.DefaultPageSize });
         }
 
-    
+        // GET: Role/Details/5
         public ActionResult Details(int id)
         {
-            RoleBLL Role;
+            OwnedItemBLL User;
             try
             {
-                using(ContextBLL ctx = new ContextBLL())
+                using (ContextBLL ctx = new ContextBLL())
                 {
-                    Role = ctx.FindRoleByID(id);
-                    if (null == Role)
+                    User = ctx.FindOwnedItemByID(id);
+                    if (null == User)
                     {
                         return View("ItemNotFound"); // BKW make this view
                     }
@@ -59,30 +79,31 @@ namespace TestCapstoneWeb.Controllers
                 ViewBag.Exception = ex;
                 return View("Error");
             }
-            return View(Role) ;
+            return View(User);
         }
 
         // GET: Role/Create
         public ActionResult Create()
         {
-            RoleBLL defRole = new RoleBLL();
-            defRole.RoleID = 0;
-            return View(defRole);
+            OwnedItemBLL defItem = new OwnedItemBLL();
+            defItem.OwnedItemID = 0;
+            ViewBag.Users = GetUserItems();
+            return View(defItem);
         }
 
         // POST: Role/Create
         [HttpPost]
-        public ActionResult Create(BusinessLogicLayer.RoleBLL collection)
+        public ActionResult Create(BusinessLogicLayer.OwnedItemBLL collection)
         {
             try
             {
                 // TODO: Add insert logic here
                 using (ContextBLL ctx = new ContextBLL())
                 {
-                    ctx.CreateRole(collection);
+                    ctx.CreateOwnedItem(collection);
                 }
 
-                    return RedirectToAction("Index");
+                return RedirectToAction("Index");
             }
             catch (Exception Ex)
             {
@@ -94,13 +115,13 @@ namespace TestCapstoneWeb.Controllers
         // GET: Role/Edit/5
         public ActionResult Edit(int id)
         {
-            RoleBLL Role;
+            OwnedItemBLL User;
             try
             {
                 using (ContextBLL ctx = new ContextBLL())
                 {
-                    Role = ctx.FindRoleByID(id);
-                    if (null == Role)
+                    User = ctx.FindOwnedItemByID(id);
+                    if (null == User)
                     {
                         return View("ItemNotFound"); // BKW make this view
                     }
@@ -111,19 +132,20 @@ namespace TestCapstoneWeb.Controllers
                 ViewBag.Exception = ex;
                 return View("Error");
             }
-            return View(Role);
+            ViewBag.Users = GetUserItems();
+            return View(User);
         }
 
         // POST: Role/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, BusinessLogicLayer.RoleBLL collection)
+        public ActionResult Edit(int id, BusinessLogicLayer.OwnedItemBLL collection)
         {
             try
             {
                 // TODO: Add insert logic here
                 using (ContextBLL ctx = new ContextBLL())
                 {
-                    ctx.UpdateRole(collection);
+                    ctx.UpdateOwnedItem(collection);
                 }
 
                 return RedirectToAction("Index");
@@ -138,13 +160,13 @@ namespace TestCapstoneWeb.Controllers
         // GET: Role/Delete/5
         public ActionResult Delete(int id)
         {
-            RoleBLL Role;
+            OwnedItemBLL User;
             try
             {
                 using (ContextBLL ctx = new ContextBLL())
                 {
-                    Role = ctx.FindRoleByID(id);
-                    if (null == Role)
+                    User = ctx.FindOwnedItemByID(id);
+                    if (null == User)
                     {
                         return View("ItemNotFound"); // BKW make this view
                     }
@@ -155,19 +177,19 @@ namespace TestCapstoneWeb.Controllers
                 ViewBag.Exception = ex;
                 return View("Error");
             }
-            return View(Role);
+            return View(User);
         }
 
         // POST: Role/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, BusinessLogicLayer.RoleBLL collection)
+        public ActionResult Delete(int id, BusinessLogicLayer.OwnedItemBLL collection)
         {
             try
             {
                 // TODO: Add insert logic here
                 using (ContextBLL ctx = new ContextBLL())
                 {
-                    ctx.DeleteRole(id);
+                    ctx.DeleteOwnedItem(id);
                 }
 
                 return RedirectToAction("Index");

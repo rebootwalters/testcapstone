@@ -1,0 +1,67 @@
+﻿@model IEnumerable<BusinessLogicLayer.OwnedItemBLL>
+
+@{
+    ViewBag.Title = "Index";
+    int PageNumber = ViewBag.PageNumber;
+    int PageSize = ViewBag.PageSize;
+    int TotalCount = ViewBag.TotalCount;
+    int TotalPageButtonCount = ((0 == TotalCount % PageSize) ? 0 : 1) + TotalCount / PageSize;
+}
+
+<h2>Index</h2>
+@{
+    for (int i = 0; i < TotalPageButtonCount; i++)
+    {
+        string classstring = (i == PageNumber) ? "btn btn-sm btn-success glyphicon glyphicon-star-empty" : "btn btn-sm btn-normal glyphicon glyphicon-asterisk";
+        @Html.ActionLink($"-Page {i}-", "Page", new { PageNumber = i, PageSize = PageSize },
+       new { @class = classstring });
+
+    }
+}
+
+
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.OwnedItemID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OwnerID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ItemDescription)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EMail)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.OwnedItemID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OwnerID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ItemDescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EMail)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.OwnedItemID }) |
+                @Html.ActionLink("Details", "Details", new {id=item.OwnedItemID }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.OwnedItemID})
+            </td>
+        </tr>
+    }
+
+</table>

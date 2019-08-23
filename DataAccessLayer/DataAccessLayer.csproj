@@ -43,6 +43,8 @@
   <ItemGroup>
     <Compile Include="ContextDAL.cs" />
     <Compile Include="Mapper.cs" />
+    <Compile Include="OwnedItemDAL.cs" />
+    <Compile Include="OwnedItemMapper.cs" />
     <Compile Include="RoleDAL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoleMapper.cs" />

@@ -9,6 +9,7 @@ namespace BusinessLogicLayer
 {
     public class ContextBLL :IDisposable
     {
+        #region basic context stuff
         DataAccessLayer.ContextDAL _context = new DataAccessLayer.ContextDAL();
 
         public void Dispose()
@@ -19,6 +20,7 @@ namespace BusinessLogicLayer
         bool Log(Exception ex)
         {
             Console.WriteLine(ex);
+            Lumberjack.Logger.Log(ex);
             return false;
         }
 
@@ -55,7 +57,9 @@ namespace BusinessLogicLayer
             _context.GenerateParameterNotIncluded();
             
         }
+        #endregion
 
+        #region Role
         public RoleBLL FindRoleByID(int RoleID)
         {
             RoleBLL ProposedReturnValue = null;
@@ -120,7 +124,8 @@ namespace BusinessLogicLayer
         {
             _context.DeleteRole(Role.RoleID);
         }
-
+        #endregion
+        #region user
         public int CreateUser(string EMail,string Hash, string Salt, DateTime DateOfBirth, int RoleID)
         {
             int proposedReturnValue = -1;
@@ -159,24 +164,20 @@ namespace BusinessLogicLayer
             _context.DeleteUser(User.UserID);
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         public UserBLL FindUserByID(int UserID)
         {
             UserBLL ProposedReturnValue = null;
             UserDAL DataLayerObject = _context.FindUserByID(UserID);
+            if (null != DataLayerObject)
+            {
+                ProposedReturnValue = new UserBLL(DataLayerObject);
+            }
+            return ProposedReturnValue;
+        }
+        public UserBLL FindUserByEMail(string EMail)
+        {
+            UserBLL ProposedReturnValue = null;
+            UserDAL DataLayerObject = _context.FindUserByEMail(EMail);
             if (null != DataLayerObject)
             {
                 ProposedReturnValue = new UserBLL(DataLayerObject);
@@ -203,18 +204,92 @@ namespace BusinessLogicLayer
             return proposedReturnValue;
         }
 
-        public void JustUpdateUser(int UserID, string EMail, string Hash, string Salt, DateTime DateOfBirth, int RoleID)
+        #endregion
+        #region OwnedItem
+        public int CreateOwnedItem(int OwnerID, string ItemDescription)
+        {
+            int proposedReturnValue = -1;
+            proposedReturnValue = _context.CreateOwnedItem(OwnerID, ItemDescription );
+            return proposedReturnValue;
+        }
+
+        public int CreateOwnedItem(OwnedItemBLL OwnedItem)
+        {
+            int proposedReturnValue = -1;
+            proposedReturnValue = _context.CreateOwnedItem(OwnedItem.OwnerID,OwnedItem.ItemDescription);
+            return proposedReturnValue;
+        }
+
+        public void UpdateOwnedItem(int OwnedItemID, int OwnerID, string ItemDescription)
         {
 
-            _context.UpdateUser(UserID, EMail, Hash, Salt, DateOfBirth, RoleID);
+            _context.UpdateOwnedItem(OwnedItemID, OwnerID, ItemDescription);
 
         }
 
-        public void JustUpdateUser(UserBLL user)
+        public void UpdateOwnedItem(OwnedItemBLL OwnedItem)
         {
 
-            _context.UpdateUser(user.UserID, user.EMail, user.Hash, user.Salt, user.DateOfBirth, user.RoleID);
+            _context.UpdateOwnedItem(OwnedItem.OwnedItemID, OwnedItem.OwnerID, OwnedItem.ItemDescription);
 
         }
+
+        public void DeleteOwnedItem(int OwnedItemID)
+        {
+            _context.DeleteOwnedItem(OwnedItemID);
+        }
+
+        public void DeleteOwnedItem(OwnedItemBLL OwnedItem)
+        {
+            _context.DeleteOwnedItem(OwnedItem.OwnedItemID);
+        }
+
+
+        public OwnedItemBLL FindOwnedItemByID(int OwnedItemID)
+        {
+            OwnedItemBLL ProposedReturnValue = null;
+            OwnedItemDAL DataLayerObject = _context.FindOwnedItemByID(OwnedItemID);
+            if (null != DataLayerObject)
+            {
+                ProposedReturnValue = new OwnedItemBLL(DataLayerObject);
+            }
+            return ProposedReturnValue;
+        }
+
+ 
+
+        public List<OwnedItemBLL> GetOwnedItems(int skip, int take)
+        {
+            List<OwnedItemBLL> ProposedReturnValue = new List<OwnedItemBLL>();
+            List<OwnedItemDAL> ListOfDataLayerObjects = _context.GetOwnedItems(skip, take);
+            foreach (OwnedItemDAL OwnedItem in ListOfDataLayerObjects)
+            {
+                OwnedItemBLL BusinessObject = new OwnedItemBLL(OwnedItem);
+                ProposedReturnValue.Add(BusinessObject);
+            }
+            return ProposedReturnValue;
+        }
+
+        public int ObtainOwnedItemCount()
+        {
+            int proposedReturnValue = 0;
+            proposedReturnValue = _context.ObtainOwnedItemCount();
+            return proposedReturnValue;
+        }
+
+        public void JustUpdateOwnedItem(int OwnedItemID, int OwnerID, string ItemDescription)
+        {
+
+            _context.UpdateOwnedItem(OwnedItemID, OwnerID, ItemDescription);
+
+        }
+
+        public void JustUpdateOwnedItem(OwnedItemBLL OwnedItem)
+        {
+
+            _context.UpdateOwnedItem(OwnedItem.OwnedItemID, OwnedItem.OwnerID,OwnedItem.ItemDescription);
+
+        }
+        #endregion
     }
 }
