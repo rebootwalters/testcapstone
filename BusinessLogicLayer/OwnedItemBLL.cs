@@ -23,10 +23,10 @@ namespace BusinessLogicLayer
         }
         #region Direct properties
 
-        [System.Web.Mvc.HiddenInput(DisplayValue = false)]
+       // [System.Web.Mvc.HiddenInput(DisplayValue = false)]
         public int OwnedItemID { get; set; }
 
-        [System.Web.Mvc.HiddenInput(DisplayValue = false)]
+      //  [System.Web.Mvc.HiddenInput(DisplayValue = false)]
         public int OwnerID { get; set; }
  
         public string ItemDescription { get; set; }

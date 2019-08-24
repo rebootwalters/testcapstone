@@ -269,14 +269,30 @@ namespace BusinessLogicLayer
             }
             return ProposedReturnValue;
         }
-
+        public List<OwnedItemBLL> GetOwnedItemsRelatedToUser(int UserID,int skip, int take)
+        {
+            List<OwnedItemBLL> ProposedReturnValue = new List<OwnedItemBLL>();
+            List<OwnedItemDAL> ListOfDataLayerObjects = _context.GetOwnedItemsRelatedToUser(UserID, skip, take);
+            foreach (OwnedItemDAL OwnedItem in ListOfDataLayerObjects)
+            {
+                OwnedItemBLL BusinessObject = new OwnedItemBLL(OwnedItem);
+                ProposedReturnValue.Add(BusinessObject);
+            }
+            return ProposedReturnValue;
+        }
+    
         public int ObtainOwnedItemCount()
         {
             int proposedReturnValue = 0;
             proposedReturnValue = _context.ObtainOwnedItemCount();
             return proposedReturnValue;
         }
-
+        public int ObtainCountOfItemsOwnedByUser (int UserID)
+        {
+            int proposedReturnValue = 0;
+            proposedReturnValue = _context.ObtainCountOfItemsOwnedByUser(UserID);
+            return proposedReturnValue;
+        }
         public void JustUpdateOwnedItem(int OwnedItemID, int OwnerID, string ItemDescription)
         {
 

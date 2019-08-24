@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessLogicLayer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -33,7 +34,7 @@ namespace TestCapstoneWeb.Controllers
         {
             Session.Remove("AUTHUsername");
             Session.Remove("AUTHRoles");
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -43,7 +44,7 @@ namespace TestCapstoneWeb.Controllers
             LoginModel m = new LoginModel();
             m.Message = TempData["Message"]?.ToString() ?? "";
             m.ReturnURL = TempData["ReturnURL"]?.ToString() ?? @"~/Home";
-            m.Username = "genericuser";
+            m.EMail = "Email Address";
             m.Password = "genericpassword";
 
             return View(m);
@@ -54,33 +55,110 @@ namespace TestCapstoneWeb.Controllers
         {
             using (BusinessLogicLayer.ContextBLL ctx = new BusinessLogicLayer.ContextBLL())
             {
-                BusinessLogicLayer.UserBLL user = ctx.FindUserByEMail(info.Username);
+                BusinessLogicLayer.UserBLL user = ctx.FindUserByEMail(info.EMail);
                 if (user == null)
                 {
-                    info.Message = $"The Username '{info.Username}' does not exist in the database";
+                    info.Message = $"The Username '{info.EMail}' does not exist in the database";
                     return View(info);
                 }
                 string actual = user.Hash;
                 //string potential = info.Password + user.Salt ;
                 //bool validateduser = System.Web.Helpers.Crypto.VerifyHashedPassword(actual, potential);
                 string potential = info.Password;
+                string ValidationType = $"ClearText:({user.UserID})";
                 bool validateduser = actual == potential;
                 if (!validateduser)
                 {
                     potential = info.Password + user.Salt ;
 
                     validateduser = System.Web.Helpers.Crypto.VerifyHashedPassword(actual, potential);
+                    ValidationType = $"HASHED:({user.UserID})";
                 }
                 if (validateduser)
                 {
                     Session["AUTHUsername"] = user.EMail;
                     Session["AUTHRoles"] = user.RoleName;
+                    Session["AUTHTYPE"] = ValidationType;
                     return Redirect(info.ReturnURL);
                 }
                 info.Message = "The password was incorrect";
                 return View(info);
             }
         }
+
+        public ActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Register(RegistrationModel info)
+        {
+            using (BusinessLogicLayer.ContextBLL ctx = new BusinessLogicLayer.ContextBLL())
+            {
+                BusinessLogicLayer.UserBLL user = ctx.FindUserByEMail(info.EMail);
+                if (user != null)
+                {
+                    info.Message = $"The EMail Address '{info.EMail}' already exists in the database";
+                    return View(info);
+                }
+                user = new UserBLL();
+                user.DateOfBirth = info.DateOfBirth;
+                user.EMail = info.EMail;
+                user.Salt = System.Web.Helpers.Crypto.
+                    GenerateSalt(MagicConstants.SaltSize);
+                user.Hash = System.Web.Helpers.Crypto.
+                    HashPassword(info.Password + user.Salt);
+                user.RoleID = 3;
+                
+                ctx.CreateUser(user);
+                    Session["AUTHUsername"] = user.EMail;
+                    Session["AUTHRoles"] = user.RoleName;
+                    Session["AUTHTYPE"] = "HASHED";
+                    return RedirectToAction("Index"); 
+                }
+            }
+
+        public ActionResult Hash()
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return View("NotLoggedIn");
+
+            }
+            if (User.Identity.AuthenticationType.StartsWith("HASHED"))
+            {
+                return View("AlreadyHashed");
+            }
+            if (User.Identity.AuthenticationType.StartsWith("IMPERSONATED"))
+            {
+                return View("ActionNotAllowed");
+            }
+            using (BusinessLogicLayer.ContextBLL ctx = new BusinessLogicLayer.ContextBLL())
+            {
+                BusinessLogicLayer.UserBLL user = ctx.FindUserByEMail(User.Identity.Name);
+                if (user == null)
+                {
+                    Exception Message = new Exception($"The Username '{User.Identity.Name}' does not exist in the database");
+                    ViewBag.Exception = Message;
+                    return View("Error");
+                }
+                user.Salt = System.Web.Helpers.Crypto.GenerateSalt(MagicConstants.SaltSize);
+                user.Hash = System.Web.Helpers.Crypto.HashPassword(user.Hash + user.Salt);
+                ctx.UpdateUser(user);
+                    
+                   string ValidationType = $"HASHED:({user.UserID})";
+                
+                    Session["AUTHUsername"] = user.EMail;
+                    Session["AUTHRoles"] = user.RoleName;
+                    Session["AUTHTYPE"] = ValidationType;
+
+                return RedirectToAction("Index", "Home") ;
+            }
+
+        }
+
+
     }
 
 

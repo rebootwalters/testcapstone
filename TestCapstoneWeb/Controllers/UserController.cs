@@ -4,10 +4,12 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using BusinessLogicLayer;
+using TestCapstoneWeb.Models;
 
 namespace TestCapstoneWeb.Controllers
 {
-    [TestCapstoneWeb.Models.MustBeLoggedIn]
+    [TestCapstoneWeb.Models.MustBeInRole(Roles = MagicConstants.AdminRoleName)]
+
     public class UserController : Controller
     {
 
@@ -98,6 +100,10 @@ namespace TestCapstoneWeb.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return View(collection);
+                }
                 // TODO: Add insert logic here
                 using (ContextBLL ctx = new ContextBLL())
                 {
@@ -143,6 +149,10 @@ namespace TestCapstoneWeb.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return View(collection);
+                }
                 // TODO: Add insert logic here
                 using (ContextBLL ctx = new ContextBLL())
                 {
@@ -187,6 +197,10 @@ namespace TestCapstoneWeb.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return View(collection);
+                }
                 // TODO: Add insert logic here
                 using (ContextBLL ctx = new ContextBLL())
                 {
@@ -200,6 +214,35 @@ namespace TestCapstoneWeb.Controllers
                 ViewBag.Exception = Ex;
                 return View("Error");
             }
+        }
+
+  
+        public ActionResult Impersonate(int id)
+        {
+            UserBLL user;
+            try
+            {
+                using (ContextBLL ctx = new ContextBLL())
+                {
+                    user = ctx.FindUserByID(id);
+                    if (null == user)
+                    {
+                        return View("ItemNotFound"); // BKW make this view
+                    }
+                    Session["AUTHUsername"] = user.EMail;
+                    Session["AUTHRoles"] = user.RoleName;
+                    Session["AUTHTYPE"] = $"IMPERSONATED:{user.UserID}";
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Exception = ex;
+                return View("Error");
+            }
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

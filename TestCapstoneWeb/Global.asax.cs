@@ -36,11 +36,12 @@ namespace TestCapstoneWeb
        {
             string UserName = Session["AUTHUserName"] as string;
             string Sessroles = Session["AUTHRoles"] as string;
+            string ValidationType = Session["AUTHTYPE"] as string;
             if (string.IsNullOrEmpty(UserName))
             {
                 return;
             }
-            GenericIdentity i = new GenericIdentity(UserName, "MyCustomType");
+            GenericIdentity i = new GenericIdentity(UserName, ValidationType);
             if (Sessroles == null)  {Sessroles = "";}
             string[] roles = Sessroles.Split(' ');
             GenericPrincipal p = new GenericPrincipal(i, roles);

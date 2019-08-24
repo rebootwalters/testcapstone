@@ -7,11 +7,22 @@ using System.Web.Mvc;
 
 namespace TestCapstoneWeb.Controllers
 {
-    [TestCapstoneWeb.Models.MustBeInRole(Roles = MagicConstants.AdminRoleName)]
-
-    public class ItemController : Controller
+    public class MyItemController : Controller
     {
+        bool IsThisMine(ContextBLL ctx ,OwnedItemBLL Mine)
+        {
+            if (User.IsInRole(MagicConstants.AdminRoleName))
+            {
+                return true;
+            }
+            UserBLL me = ctx.FindUserByEMail(User.Identity.Name);
+            if (me == null)
+            {
+                return false;
+            }
 
+            return me.UserID == Mine.OwnerID;
+        }
         List<SelectListItem> GetUserItems()
         {
             List<SelectListItem> ProposedReturnValue = new List<SelectListItem>();
@@ -29,6 +40,8 @@ namespace TestCapstoneWeb.Controllers
             }
             return ProposedReturnValue;
         }
+
+ 
         // GET: Item
         public ActionResult Page(int PageNumber, int PageSize)
         {
@@ -41,10 +54,16 @@ namespace TestCapstoneWeb.Controllers
             {
                 using (ContextBLL ctx = new ContextBLL())
                 {
-                    ViewBag.TotalCount = ctx.ObtainOwnedItemCount();
-                    Model = ctx.GetOwnedItems(PageNumber * PageSize, PageSize);
+                    UserBLL ThisUser = ctx.FindUserByEMail(User.Identity.Name);
+                    if (null == ThisUser)
+                    {
+                        ViewBag.Exception = new Exception($"Could Not Find Record for User: {User.Identity.Name}");
+                        return View("Error");
+                    }
+                    ViewBag.TotalCount = ctx.ObtainCountOfItemsOwnedByUser(ThisUser.UserID);
+                    Model = ctx.GetOwnedItemsRelatedToUser(ThisUser.UserID,PageNumber * PageSize, PageSize);
                 }
-                return View("Index", Model);
+                return View("..\\Item\\Index", Model);
             }
             catch (Exception ex)
             {
@@ -58,22 +77,27 @@ namespace TestCapstoneWeb.Controllers
         public ActionResult Index()
         {
 
-            return RedirectToRoute(new { Controller = "Item", Action = "Page", PageNumber = 0, PageSize = ApplicationConfig.DefaultPageSize });
+            return RedirectToRoute(new { Controller = "MyItem", Action = "Page", PageNumber = 0, PageSize = ApplicationConfig.DefaultPageSize });
         }
 
         // GET: Role/Details/5
         public ActionResult Details(int id)
         {
-            OwnedItemBLL User;
+            OwnedItemBLL Model;
             try
             {
                 using (ContextBLL ctx = new ContextBLL())
                 {
-                    User = ctx.FindOwnedItemByID(id);
-                    if (null == User)
+                    Model = ctx.FindOwnedItemByID(id);
+                    if (null == Model)
                     {
-                        return View("ItemNotFound"); // BKW make this view
+                        return View("ItemNotFound"); 
                     }
+                    if (!IsThisMine(ctx,Model))
+                    {
+                        return View("NotYourItem");
+                    }
+                    
                 }
             }
             catch (Exception ex)
@@ -81,7 +105,7 @@ namespace TestCapstoneWeb.Controllers
                 ViewBag.Exception = ex;
                 return View("Error");
             }
-            return View(User);
+            return View("..\\Item\\Details",Model);
         }
 
         // GET: Role/Create
@@ -90,7 +114,7 @@ namespace TestCapstoneWeb.Controllers
             OwnedItemBLL defItem = new OwnedItemBLL();
             defItem.OwnedItemID = 0;
             ViewBag.Users = GetUserItems();
-            return View(defItem);
+            return View("..\\Item\\Create", defItem);
         }
 
         // POST: Role/Create
@@ -99,13 +123,10 @@ namespace TestCapstoneWeb.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return View(collection);
-                }
                 // TODO: Add insert logic here
                 using (ContextBLL ctx = new ContextBLL())
                 {
+                    
                     ctx.CreateOwnedItem(collection);
                 }
 
@@ -121,16 +142,21 @@ namespace TestCapstoneWeb.Controllers
         // GET: Role/Edit/5
         public ActionResult Edit(int id)
         {
-            OwnedItemBLL User;
+            OwnedItemBLL Model;
             try
             {
                 using (ContextBLL ctx = new ContextBLL())
                 {
-                    User = ctx.FindOwnedItemByID(id);
-                    if (null == User)
+                    Model = ctx.FindOwnedItemByID(id);
+                    if (null == Model)
                     {
                         return View("ItemNotFound"); // BKW make this view
                     }
+                    if (!IsThisMine(ctx, Model))
+                    {
+                        return View("NotYourItem");
+                    }
+
                 }
             }
             catch (Exception ex)
@@ -139,7 +165,7 @@ namespace TestCapstoneWeb.Controllers
                 return View("Error");
             }
             ViewBag.Users = GetUserItems();
-            return View(User);
+            return View("..\\Item\\Edit", Model);
         }
 
         // POST: Role/Edit/5
@@ -148,13 +174,19 @@ namespace TestCapstoneWeb.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
+                
+            using (ContextBLL ctx = new ContextBLL())
                 {
-                    return View(collection);
-                }
-                // TODO: Add insert logic here
-                using (ContextBLL ctx = new ContextBLL())
-                {
+                    OwnedItemBLL Mine = ctx.FindOwnedItemByID(collection.OwnedItemID);
+                    if (null == Mine)
+                    {
+                        return View("ItemNotFound"); 
+                    }
+                    if (!IsThisMine(ctx, Mine))
+                    {
+                        return View("NotYourItem");
+                    }
+               
                     ctx.UpdateOwnedItem(collection);
                 }
 
@@ -170,15 +202,20 @@ namespace TestCapstoneWeb.Controllers
         // GET: Role/Delete/5
         public ActionResult Delete(int id)
         {
-            OwnedItemBLL User;
+            OwnedItemBLL Model;
             try
             {
                 using (ContextBLL ctx = new ContextBLL())
                 {
-                    User = ctx.FindOwnedItemByID(id);
-                    if (null == User)
+                    Model = ctx.FindOwnedItemByID(id);
+
+                    if (null == Model)
                     {
                         return View("ItemNotFound"); // BKW make this view
+                    }
+                    if (!IsThisMine(ctx, Model))
+                    {
+                        return View("NotYourItem");
                     }
                 }
             }
@@ -187,7 +224,7 @@ namespace TestCapstoneWeb.Controllers
                 ViewBag.Exception = ex;
                 return View("Error");
             }
-            return View(User);
+            return View("..\\Item\\Delete", Model);
         }
 
         // POST: Role/Delete/5
@@ -196,13 +233,19 @@ namespace TestCapstoneWeb.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return View(collection);
-                }
                 // TODO: Add insert logic here
                 using (ContextBLL ctx = new ContextBLL())
                 {
+                    OwnedItemBLL Mine = ctx.FindOwnedItemByID(id);
+                    if (null == Mine)
+                    {
+                        return View("ItemNotFound"); 
+
+                    }
+                    if (!IsThisMine(ctx, Mine))
+                    {
+                        return View("NotYourItem");
+                    }
                     ctx.DeleteOwnedItem(id);
                 }
 

@@ -2,24 +2,11 @@
 
 @{
     ViewBag.Title = "Index";
-    int PageNumber = ViewBag.PageNumber;
-    int PageSize = ViewBag.PageSize;
-    int TotalCount = ViewBag.TotalCount;
-    int TotalPageButtonCount = ((0 == TotalCount % PageSize) ? 0 : 1) + TotalCount / PageSize;
-}
+    }
 
 <h2>Index</h2>
-@{
-    for (int i = 0; i < TotalPageButtonCount; i++)
-    {
-        string classstring = (i == PageNumber) ? "btn btn-sm btn-success glyphicon glyphicon-star-empty" : "btn btn-sm btn-normal glyphicon glyphicon-asterisk";
-        @Html.ActionLink($"-Page {i}-", "Page", new { PageNumber = i, PageSize = PageSize },
-       new { @class = classstring });
 
-    }
-}
-
-
+<p>@Html.Partial("Paging") </p>
 
 <p>
     @Html.ActionLink("Create New", "Create")

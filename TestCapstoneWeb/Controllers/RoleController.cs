@@ -7,7 +7,7 @@ using BusinessLogicLayer;
 
 namespace TestCapstoneWeb.Controllers
 {
-    [TestCapstoneWeb.Models.MustBeLoggedIn]
+    [TestCapstoneWeb.Models.MustBeInRole(Roles =MagicConstants.AdminRoleName)]
     public class RoleController : Controller
     {
 
@@ -76,6 +76,10 @@ namespace TestCapstoneWeb.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return View(collection);
+                }
                 // TODO: Add insert logic here
                 using (ContextBLL ctx = new ContextBLL())
                 {
@@ -120,7 +124,10 @@ namespace TestCapstoneWeb.Controllers
         {
             try
             {
-                // TODO: Add insert logic here
+                if (!ModelState.IsValid)
+                {
+                    return View(collection);
+                }   // TODO: Add insert logic here
                 using (ContextBLL ctx = new ContextBLL())
                 {
                     ctx.UpdateRole(collection);
@@ -164,7 +171,11 @@ namespace TestCapstoneWeb.Controllers
         {
             try
             {
-                // TODO: Add insert logic here
+                if (!ModelState.IsValid)
+                {
+                    return View(collection);
+                }
+                // TODO: Add delete logic here
                 using (ContextBLL ctx = new ContextBLL())
                 {
                     ctx.DeleteRole(id);

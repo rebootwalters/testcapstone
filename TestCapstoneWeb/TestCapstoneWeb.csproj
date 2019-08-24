@@ -121,6 +121,7 @@
     <Compile Include="Controllers\ErrorTestController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
+    <Compile Include="Controllers\MyItemController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
@@ -128,6 +129,8 @@
     </Compile>
     <Compile Include="Models\filters.cs" />
     <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\MagicConstants.cs" />
+    <Compile Include="Models\RegistrationModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -186,9 +189,17 @@
     <Content Include="Views\Item\Delete.cshtml" />
     <Content Include="Views\Item\Create.cshtml" />
     <Content Include="Views\Item\Edit.cshtml" />
+    <Content Include="Views\Home\Register.cshtml" />
+    <Content Include="Views\Shared\Paging.cshtml" />
+    <Content Include="Views\Shared\ItemNotFound.cshtml" />
+    <Content Include="Views\Shared\NotYourItem.cshtml" />
+    <Content Include="Views\Shared\NotLoggedIn.cshtml" />
+    <Content Include="Views\Shared\AlreadyHashed.cshtml" />
+    <Content Include="Views\Shared\ActionNotAllowed.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\MyItem\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

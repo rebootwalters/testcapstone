@@ -25,17 +25,32 @@
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                    <li>@Html.ActionLink("Roles", "Index", "Role")</li>
-                    <li>@Html.ActionLink("Users", "Index", "User")</li>
-                    <li>@Html.ActionLink("Items", "Index", "Item")</li>
+                    @if (User.IsInRole(MagicConstants.AdminRoleName))
+                    {
+                        <li>@Html.ActionLink("Roles", "Index", "Role")</li>
+                        <li>@Html.ActionLink("Users", "Index", "User")</li>
+                        <li>@Html.ActionLink("Items", "Index", "Item")</li>
+
+                    }
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li>@Html.ActionLink("My Items", "Index", "MyItem")</li>
+                    }
                     <li>@Html.ActionLink("Testing", "Index", "ErrorTest")</li>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li>Welcome @User.Identity.Name</li>
+                        <li>@Html.ActionLink("Welcome " + User.Identity.Name + ":" + User.Identity.AuthenticationType, "Index", "Home") </li>
                         <li>@Html.ActionLink("Logout", "Logout", "Home")</li>
+                        if (User.Identity.AuthenticationType.StartsWith("ClearText"))
+                        {
+                            <li>@Html.ActionLink("HASH Password", "Hash", "Home")</li>
+
+                        }
                     }
                     else
                     {
+                        <li>@Html.ActionLink("Register", "Register", "Home")</li>
+
                         <li>@Html.ActionLink("Login", "Login", "Home")</li>
                     }
                 </ul>

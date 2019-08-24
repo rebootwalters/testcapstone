@@ -588,7 +588,35 @@ namespace DataAccessLayer
             }
             return proposedReturnValue;
         }
+        public List<OwnedItemDAL> GetOwnedItemsRelatedToUser (int UserID, int skip, int take)
+        {
+            List<OwnedItemDAL> proposedReturnValue = new List<OwnedItemDAL>();
+            try
+            {
+                EnsureConnected();
+                using (SqlCommand command = new SqlCommand("GetOwnedItemsRelatedToUser", _connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Skip", skip);
+                    command.Parameters.AddWithValue("@Take", take);
+                    command.Parameters.AddWithValue("@userID", UserID);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        OwnedItemMapper m = new OwnedItemMapper(reader);
+                        while (reader.Read())
+                        {
+                            OwnedItemDAL r = m.OwnedItemFromReader(reader);
+                            proposedReturnValue.Add(r);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) when (Log(ex))
+            {
 
+            }
+            return proposedReturnValue;
+        }
         public int ObtainOwnedItemCount()
         {
             int proposedReturnValue = -1;
@@ -609,13 +637,13 @@ namespace DataAccessLayer
 
             return proposedReturnValue;
         }
-        public int ObtainCountOfItemsOwnedByUserCount(int UserID)
+        public int ObtainCountOfItemsOwnedByUser(int UserID)
         {
             int proposedReturnValue = -1;
             try
             {
                 EnsureConnected();
-                using (SqlCommand command = new SqlCommand("ObtainCountOfItemsOwnedByUserCount", _connection))
+                using (SqlCommand command = new SqlCommand("ObtainCountOfItemsOwnedByUser", _connection))
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@UserID", UserID);

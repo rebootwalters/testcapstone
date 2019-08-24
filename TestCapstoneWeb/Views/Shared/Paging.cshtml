@@ -1,0 +1,42 @@
+﻿
+@{
+    int PageNumber = ViewBag.PageNumber;
+    int PageSize = ViewBag.PageSize;
+    int TotalCount = ViewBag.TotalCount;
+    int TotalPageButtonCount = ((0 == TotalCount % PageSize) ? 0 : 1) + TotalCount / PageSize;
+
+}
+    <p>
+        Items Per Page:
+        @Html.ActionLink(" -1- ", "page", new { PageNumber = 0, PageSize = 1 })
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        @Html.ActionLink(" -2- ", "page", new { PageNumber = 0, PageSize = 2 })
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        @Html.ActionLink(" -3- ", "page", new { PageNumber = 0, PageSize = 3 })
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        @Html.ActionLink(" -4- ", "page", new { PageNumber = 0, PageSize = 4 })
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        @Html.ActionLink(" -5- ", "page", new { PageNumber = 0, PageSize = 5 })
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        @Html.ActionLink(" -10- ", "page", new { PageNumber = 0, PageSize = 10 })
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        @Html.ActionLink(" -20- ", "page", new { PageNumber = 0, PageSize = 20 })
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        @Html.ActionLink(" -30- ", "page", new { PageNumber = 0, PageSize = 30 })
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        @Html.ActionLink(" -40- ", "page", new { PageNumber = 0, PageSize = 40 })
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        @Html.ActionLink(" -50- ", "page", new { PageNumber = 0, PageSize = 50 })
+
+    </p>
+<p>
+@{
+    for (int i = 0; i < TotalPageButtonCount; i++)
+    {
+        string classstring = (i == PageNumber) ? "btn btn-sm btn-success glyphicon glyphicon-star-empty" : "btn btn-sm btn-normal glyphicon glyphicon-asterisk";
+        @Html.ActionLink($"-Page {i}-", "Page", new { PageNumber = i, PageSize = PageSize }, new { @class = classstring });
+
+    }
+}
+</p>
+
