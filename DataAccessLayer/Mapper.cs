@@ -43,6 +43,19 @@ namespace DataAccessLayer
                 return reader.GetInt32(Ordinal);
             }
         }
+        public decimal
+     GetDecimalOrDefault(SqlDataReader reader, int Ordinal, decimal  defaultValue = 0M)
+        {
+            if (reader.IsDBNull(Ordinal))
+            {
+                return defaultValue;
+
+            }
+            else
+            {
+                return reader.GetDecimal(Ordinal);
+            }
+        }
 
         public DateTime
             GetDateTimeOrDefault(SqlDataReader reader, int Ordinal, DateTime defaultValue)

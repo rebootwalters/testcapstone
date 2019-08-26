@@ -10,12 +10,23 @@ namespace BusinessLogicLayer
 {
     public class UserBLL
     {
+        IDateTimeProvider _DateProvider;
         public UserBLL()
         {
+            _DateProvider = DefaultDateProvider.DefaultProvider;
+        }
+        public UserBLL(IDateTimeProvider DateTimeProvider)
+        {
+            _DateProvider = DateTimeProvider;
+        }
 
+        public UserBLL(UserDAL dal, IDateTimeProvider DateTimeProvider) :this(dal)
+        {
+            _DateProvider = DateTimeProvider;
         }
         public UserBLL(UserDAL dal)
         {
+            _DateProvider = DefaultDateProvider.DefaultProvider;
             // this.Age = dal.age;  // this.age is BLL only
             this.DateOfBirth = dal.DateOfBirth;
             this.EMail = dal.EMail;
@@ -51,7 +62,7 @@ namespace BusinessLogicLayer
         public int Age
         {
             get
-            { return (int)((DateTime.Now - DateOfBirth).Days/365.25); }
+            { return (int)((_DateProvider.GetDateTime() - DateOfBirth).Days/365.25); }
         }
 
         public bool isAbleToPurchaseCigarettes

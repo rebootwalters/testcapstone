@@ -214,5 +214,29 @@ namespace TestCapstoneWeb.Controllers
                 return View("Error");
             }
         }
+
+        public ActionResult Stats()
+        {
+            try
+            {
+                List<OwnedItemBLL> Items;
+                List<ItemStats> Model;
+                using (ContextBLL ctx = new ContextBLL())
+                {
+                    int TotalCount = ctx.ObtainOwnedItemCount();
+                    Items = ctx.GetOwnedItems(0,TotalCount);
+                    MeaningfulCalculator mc = new MeaningfulCalculator();
+                    Model = mc.ComputeStats(Items);
+
+                }
+                return View("Stats", Model);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Exception = ex;
+                return View("Error");
+            }
+
+        }
     }
 }

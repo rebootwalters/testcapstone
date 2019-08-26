@@ -257,5 +257,38 @@ namespace TestCapstoneWeb.Controllers
                 return View("Error");
             }
         }
+
+        public ActionResult Stats()
+        {
+            try
+            {
+                List<OwnedItemBLL> Items;
+                List<ItemStats> Model;
+                using (ContextBLL ctx = new ContextBLL())
+                {
+                    UserBLL ThisUser = ctx.FindUserByEMail(User.Identity.Name);
+                    if (null == ThisUser)
+                    {
+                        ViewBag.Exception = new Exception($"Could Not Find Record for User: {User.Identity.Name}");
+                        return View("Error");
+                    }
+                    int TotalCount = ctx.ObtainCountOfItemsOwnedByUser(ThisUser.UserID);
+                   Items = ctx.GetOwnedItemsRelatedToUser(ThisUser.UserID, 0,TotalCount);
+
+
+                    MeaningfulCalculator mc = new MeaningfulCalculator();
+                    Model = mc.ComputeStats(Items);
+
+                }
+                return View("..\\Item\\Stats", Model);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Exception = ex;
+                return View("Error");
+            }
+
+        }
+
     }
 }

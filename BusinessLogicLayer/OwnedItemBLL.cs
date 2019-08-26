@@ -18,6 +18,7 @@ namespace BusinessLogicLayer
             this.OwnedItemID = dal.OwnedItemID;
             this.OwnerID = dal.OwnerID;
             this.ItemDescription = dal.ItemDescription;
+            this.ItemPrice = dal.ItemPrice;
             this.EMail = dal.EMail;
 
         }
@@ -30,6 +31,8 @@ namespace BusinessLogicLayer
         public int OwnerID { get; set; }
  
         public string ItemDescription { get; set; }
+
+        public decimal ItemPrice { get; set; }
         #endregion
         #region Indirect Properties
        
@@ -41,7 +44,7 @@ namespace BusinessLogicLayer
 
         public override string ToString()
         {
-            return $"OwnedItemID: {OwnedItemID} OwnerID:{OwnerID} ItemDescription:{ItemDescription} Email:{EMail}";
+            return $"OwnedItemID: {OwnedItemID} OwnerID:{OwnerID} ItemDescription:{ItemDescription} ItemPrice: {ItemPrice} Email:{EMail}";
         }
 
 

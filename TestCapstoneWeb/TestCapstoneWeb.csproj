@@ -196,6 +196,7 @@
     <Content Include="Views\Shared\NotLoggedIn.cshtml" />
     <Content Include="Views\Shared\AlreadyHashed.cshtml" />
     <Content Include="Views\Shared\ActionNotAllowed.cshtml" />
+    <Content Include="Views\Item\Stats.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

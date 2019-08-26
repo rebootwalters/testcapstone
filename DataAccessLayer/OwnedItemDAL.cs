@@ -12,6 +12,8 @@ namespace DataAccessLayer
         public int OwnerID { get; set; }
         public string ItemDescription { get; set; }
 
+        public decimal ItemPrice { get; set; }
+
         public string  EMail { get; set; }
     }
 }
