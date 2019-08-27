@@ -39,6 +39,10 @@ namespace BusinessLogicLayer
         {
             _thisTime = thisTime;
         }
+        public ThisDateTimeProvider(int Year, int Month, int Day)
+        {
+            _thisTime = new DateTime(Year,Month,Day);
+        }
         public DateTime GetDateTime()
         {
             return _thisTime;
@@ -71,6 +75,8 @@ namespace BusinessLogicLayer
 
         public double AverageAge(List<UserBLL>Users)
         {
+            if (Users == null) return 0;
+            if (Users.Count == 0) return 0;
             return Users.Average(u => u.Age);
         }
 
