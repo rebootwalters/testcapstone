@@ -23,11 +23,10 @@ namespace TestCapstoneWeb.Controllers
 
             return me.UserID == Mine.OwnerID;
         }
-        List<SelectListItem> GetUserItems()
+        List<SelectListItem> GetUserItems(ContextBLL ctx)
         {
             List<SelectListItem> ProposedReturnValue = new List<SelectListItem>();
-            using (ContextBLL ctx = new ContextBLL())
-            {
+           
                 List<UserBLL> roles = ctx.GetUsers(0, 100);
                 foreach (UserBLL u in roles)
                 {
@@ -37,7 +36,7 @@ namespace TestCapstoneWeb.Controllers
                     i.Text = u.EMail;
                     ProposedReturnValue.Add(i);
                 }
-            }
+            
             return ProposedReturnValue;
         }
 
@@ -113,8 +112,11 @@ namespace TestCapstoneWeb.Controllers
         {
             OwnedItemBLL defItem = new OwnedItemBLL();
             defItem.OwnedItemID = 0;
-            ViewBag.Users = GetUserItems();
-            return View("..\\Item\\Create", defItem);
+            using (ContextBLL ctx = new ContextBLL())
+            {
+                ViewBag.Users = GetUserItems(ctx);
+                return View("..\\Item\\Create", defItem);
+            }
         }
 
         // POST: Role/Create
@@ -156,7 +158,7 @@ namespace TestCapstoneWeb.Controllers
                     {
                         return View("NotYourItem");
                     }
-
+                    ViewBag.Users = GetUserItems(ctx);
                 }
             }
             catch (Exception ex)
@@ -164,7 +166,7 @@ namespace TestCapstoneWeb.Controllers
                 ViewBag.Exception = ex;
                 return View("Error");
             }
-            ViewBag.Users = GetUserItems();
+           
             return View("..\\Item\\Edit", Model);
         }
 

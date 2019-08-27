@@ -22,6 +22,6 @@ namespace TestCapstoneWeb
         public const int MaxPasswordLength = 18;
         public const int SaltSize = 20;
         public const string PasswordRequirementsMessage = "The Password must contain at Least One Capital letter, One Lowercase letter and One Number";
-        public const string PasswordRequirements = @"^((?=.*[a-z])(?=.*[A-Z])(?=.*\d)).+$";
+        public const string PasswordRequirements = @"^((?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()+=-:;.,])).+$";
     }
 }

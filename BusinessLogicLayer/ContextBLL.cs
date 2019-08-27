@@ -206,17 +206,17 @@ namespace BusinessLogicLayer
 
         #endregion
         #region OwnedItem
-        public int CreateOwnedItem(int OwnerID, string ItemDescription)
+        public int CreateOwnedItem(int OwnerID, string ItemDescription, decimal ItemPrice)
         {
             int proposedReturnValue = -1;
-            proposedReturnValue = _context.CreateOwnedItem(OwnerID, ItemDescription );
+            proposedReturnValue = _context.CreateOwnedItem(OwnerID, ItemDescription,ItemPrice );
             return proposedReturnValue;
         }
 
         public int CreateOwnedItem(OwnedItemBLL OwnedItem)
         {
             int proposedReturnValue = -1;
-            proposedReturnValue = _context.CreateOwnedItem(OwnedItem.OwnerID,OwnedItem.ItemDescription);
+            proposedReturnValue = _context.CreateOwnedItem(OwnedItem.OwnerID,OwnedItem.ItemDescription,OwnedItem.ItemPrice);
             return proposedReturnValue;
         }
 

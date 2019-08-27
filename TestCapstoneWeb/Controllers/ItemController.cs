@@ -12,11 +12,10 @@ namespace TestCapstoneWeb.Controllers
     public class ItemController : Controller
     {
 
-        List<SelectListItem> GetUserItems()
+        List<SelectListItem> GetUserItems(ContextBLL ctx)
         {
             List<SelectListItem> ProposedReturnValue = new List<SelectListItem>();
-            using (ContextBLL ctx = new ContextBLL())
-            {
+           
                 List<UserBLL> roles = ctx.GetUsers(0, 100);
                 foreach (UserBLL u in roles)
                 {
@@ -26,7 +25,7 @@ namespace TestCapstoneWeb.Controllers
                     i.Text = u.EMail;
                     ProposedReturnValue.Add(i);
                 }
-            }
+            
             return ProposedReturnValue;
         }
         // GET: Item
@@ -89,8 +88,11 @@ namespace TestCapstoneWeb.Controllers
         {
             OwnedItemBLL defItem = new OwnedItemBLL();
             defItem.OwnedItemID = 0;
-            ViewBag.Users = GetUserItems();
-            return View(defItem);
+            using (ContextBLL ctx = new ContextBLL())
+            {
+                ViewBag.Users = GetUserItems(ctx);
+                return View(defItem);
+            }
         }
 
         // POST: Role/Create
@@ -131,6 +133,7 @@ namespace TestCapstoneWeb.Controllers
                     {
                         return View("ItemNotFound"); // BKW make this view
                     }
+                ViewBag.Users = GetUserItems(ctx);
                 }
             }
             catch (Exception ex)
@@ -138,7 +141,7 @@ namespace TestCapstoneWeb.Controllers
                 ViewBag.Exception = ex;
                 return View("Error");
             }
-            ViewBag.Users = GetUserItems();
+ 
             return View(User);
         }
 

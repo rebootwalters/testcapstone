@@ -38,7 +38,8 @@
                 @Html.ActionLink("Edit", "Edit", new { id = item.RoleID, Brian = 101, Carol = 102 }) |
                 @Html.ActionLink("Details", "Details", new { id = item.RoleID }) |
                 @Html.ActionLink("Delete", "Delete", new { id = item.RoleID }) |
-               
+                @Html.ActionLink("Add User and Item", "Create", new { id = item.RoleID, Controller="OneViewTwoTables" }) |
+
             </td>
         </tr>
     }

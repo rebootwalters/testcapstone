@@ -659,7 +659,7 @@ namespace DataAccessLayer
             return proposedReturnValue;
         }
 
-        public int CreateOwnedItem(int OwnerID, string ItemDescription)
+        public int CreateOwnedItem(int OwnerID, string ItemDescription, decimal ItemPrice)
         {
             int proposedReturnValue = -1;
             try
@@ -670,6 +670,7 @@ namespace DataAccessLayer
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@OwnerID", OwnerID);
                     command.Parameters.AddWithValue("@ItemDescription", ItemDescription);
+                    command.Parameters.AddWithValue("@ItemPrice", ItemPrice);
 
                     command.Parameters.AddWithValue("@OwnedItemID", 0);
                     command.Parameters["@OwnedItemID"].Direction = System.Data.ParameterDirection.Output;
