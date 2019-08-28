@@ -70,9 +70,19 @@ namespace TestCapstoneWeb.Controllers
                 if (!validateduser)
                 {
                     potential = info.Password + user.Salt ;
+                    try
+                    {
+                       // this try catches the event where a cleartext user types the 
+                       // wrong password.  The VerifyHashedPassword will throw exception 
+                       // because salt is invalid.
+                        validateduser = System.Web.Helpers.Crypto.VerifyHashedPassword(actual, potential);
+                        ValidationType = $"HASHED:({user.UserID})";
+                    }
+                    catch (Exception)
+                    {
 
-                    validateduser = System.Web.Helpers.Crypto.VerifyHashedPassword(actual, potential);
-                    ValidationType = $"HASHED:({user.UserID})";
+                        validateduser = false;
+                    }
                 }
                 if (validateduser)
                 {
