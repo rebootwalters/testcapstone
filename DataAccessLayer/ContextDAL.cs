@@ -686,7 +686,7 @@ namespace DataAccessLayer
             return proposedReturnValue;
         }
 
-        public void UpdateOwnedItem(int OwnedItemID, int OwnerID, string ItemDescription)
+        public void UpdateOwnedItem(int OwnedItemID, int OwnerID, string ItemDescription, decimal ItemPrice)
         {
 
             try
@@ -698,6 +698,7 @@ namespace DataAccessLayer
                     command.Parameters.AddWithValue("@ItemID", OwnedItemID);
                     command.Parameters.AddWithValue("@OwnerID", OwnerID);
                     command.Parameters.AddWithValue("@ItemDescription", ItemDescription);
+                    command.Parameters.AddWithValue("@ItemPrice", ItemPrice);
 
                     command.ExecuteNonQuery();
 

@@ -7,9 +7,9 @@ using System.Web.Mvc;
 
 namespace TestCapstoneWeb.Controllers
 {
-    public class MyItemController : Controller
+    public class MichaelController : Controller
     {
-        bool IsThisMine(ContextBLL ctx ,OwnedItemBLL Mine)
+        bool IsThisMine(ContextBLL ctx, OwnedItemBLL Mine)
         {
             if (User.IsInRole(MagicConstants.AdminRoleName))
             {
@@ -26,21 +26,21 @@ namespace TestCapstoneWeb.Controllers
         List<SelectListItem> GetUserItems(ContextBLL ctx)
         {
             List<SelectListItem> ProposedReturnValue = new List<SelectListItem>();
-           
-                List<UserBLL> roles = ctx.GetUsers(0, 100);
-                foreach (UserBLL u in roles)
-                {
-                    SelectListItem i = new SelectListItem();
 
-                    i.Value = u.UserID.ToString();
-                    i.Text = u.EMail;
-                    ProposedReturnValue.Add(i);
-                }
-            
+            List<UserBLL> roles = ctx.GetUsers(0, 100);
+            foreach (UserBLL u in roles)
+            {
+                SelectListItem i = new SelectListItem();
+
+                i.Value = u.UserID.ToString();
+                i.Text = u.EMail;
+                ProposedReturnValue.Add(i);
+            }
+
             return ProposedReturnValue;
         }
 
- 
+
         // GET: Item
         public ActionResult Page(int PageNumber, int PageSize)
         {
@@ -60,11 +60,11 @@ namespace TestCapstoneWeb.Controllers
                         return View("Error");
                     }
                     ViewBag.TotalCount = ctx.ObtainCountOfItemsOwnedByUser(ThisUser.UserID);
-                    Model = ctx.GetOwnedItemsRelatedToUser(ThisUser.UserID,PageNumber * PageSize, PageSize);
+                    Model = ctx.GetOwnedItemsRelatedToUser(ThisUser.UserID, PageNumber * PageSize, PageSize);
                     ViewBag.Users = GetUserItems(ctx);
                 }
-               
-                return View("..\\Item\\Index", Model);
+
+                return View("MyIndex", Model);
             }
             catch (Exception ex)
             {
@@ -74,11 +74,20 @@ namespace TestCapstoneWeb.Controllers
 
         }
 
+        public ActionResult MyIndex()
+        {
+            using (ContextBLL ctx = new ContextBLL())
+            {
+                ViewBag.Users = GetUserItems(ctx);
+                return View();
+            }
+        }
+
         // GET: User
         public ActionResult Index()
         {
 
-            return RedirectToRoute(new { Controller = "MyItem", Action = "Page", PageNumber = 0, PageSize = ApplicationConfig.DefaultPageSize });
+            return RedirectToRoute(new { Controller = "Michael", Action = "Page", PageNumber = 0, PageSize = ApplicationConfig.DefaultPageSize });
         }
 
         // GET: Role/Details/5
@@ -92,13 +101,13 @@ namespace TestCapstoneWeb.Controllers
                     Model = ctx.FindOwnedItemByID(id);
                     if (null == Model)
                     {
-                        return View("ItemNotFound"); 
+                        return View("ItemNotFound");
                     }
-                    if (!IsThisMine(ctx,Model))
+                    if (!IsThisMine(ctx, Model))
                     {
                         return View("NotYourItem");
                     }
-                    
+
                 }
             }
             catch (Exception ex)
@@ -106,7 +115,7 @@ namespace TestCapstoneWeb.Controllers
                 ViewBag.Exception = ex;
                 return View("Error");
             }
-            return View("..\\Item\\Details",Model);
+            return View("..\\Item\\Details", Model);
         }
 
         // GET: Role/Create
@@ -130,7 +139,7 @@ namespace TestCapstoneWeb.Controllers
                 // TODO: Add insert logic here
                 using (ContextBLL ctx = new ContextBLL())
                 {
-                    
+
                     ctx.CreateOwnedItem(collection);
                 }
 
@@ -168,7 +177,7 @@ namespace TestCapstoneWeb.Controllers
                 ViewBag.Exception = ex;
                 return View("Error");
             }
-           
+
             return View("..\\Item\\Edit", Model);
         }
 
@@ -178,19 +187,19 @@ namespace TestCapstoneWeb.Controllers
         {
             try
             {
-                
-            using (ContextBLL ctx = new ContextBLL())
+
+                using (ContextBLL ctx = new ContextBLL())
                 {
                     OwnedItemBLL Mine = ctx.FindOwnedItemByID(collection.OwnedItemID);
                     if (null == Mine)
                     {
-                        return View("ItemNotFound"); 
+                        return View("ItemNotFound");
                     }
                     if (!IsThisMine(ctx, Mine))
                     {
                         return View("NotYourItem");
                     }
-               
+
                     ctx.UpdateOwnedItem(collection);
                 }
 
@@ -243,7 +252,7 @@ namespace TestCapstoneWeb.Controllers
                     OwnedItemBLL Mine = ctx.FindOwnedItemByID(id);
                     if (null == Mine)
                     {
-                        return View("ItemNotFound"); 
+                        return View("ItemNotFound");
 
                     }
                     if (!IsThisMine(ctx, Mine))
@@ -277,7 +286,7 @@ namespace TestCapstoneWeb.Controllers
                         return View("Error");
                     }
                     int TotalCount = ctx.ObtainCountOfItemsOwnedByUser(ThisUser.UserID);
-                   Items = ctx.GetOwnedItemsRelatedToUser(ThisUser.UserID, 0,TotalCount);
+                    Items = ctx.GetOwnedItemsRelatedToUser(ThisUser.UserID, 0, TotalCount);
 
 
                     MeaningfulCalculator mc = new MeaningfulCalculator();
@@ -292,6 +301,13 @@ namespace TestCapstoneWeb.Controllers
                 return View("Error");
             }
 
+        }
+
+       public ActionResult Activate(int id, int SelectedID)
+        {
+            ViewBag.SelectedID = SelectedID;
+            ViewBag.id = id;
+            return View();
         }
 
     }

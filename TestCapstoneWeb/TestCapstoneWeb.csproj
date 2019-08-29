@@ -121,6 +121,7 @@
     <Compile Include="Controllers\ErrorTestController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
+    <Compile Include="Controllers\MichaelController.cs" />
     <Compile Include="Controllers\MyItemController.cs" />
     <Compile Include="Controllers\OneViewTwoTablesController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
@@ -199,6 +200,8 @@
     <Content Include="Views\Shared\ActionNotAllowed.cshtml" />
     <Content Include="Views\Item\Stats.cshtml" />
     <Content Include="Views\OneViewTwoTables\Create.cshtml" />
+    <Content Include="Views\Michael\MyIndex.cshtml" />
+    <Content Include="Views\Michael\Activate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

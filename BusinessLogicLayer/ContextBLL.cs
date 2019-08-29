@@ -220,17 +220,17 @@ namespace BusinessLogicLayer
             return proposedReturnValue;
         }
 
-        public void UpdateOwnedItem(int OwnedItemID, int OwnerID, string ItemDescription)
+        public void UpdateOwnedItem(int OwnedItemID, int OwnerID, string ItemDescription, decimal ItemPrice)
         {
 
-            _context.UpdateOwnedItem(OwnedItemID, OwnerID, ItemDescription);
+            _context.UpdateOwnedItem(OwnedItemID, OwnerID, ItemDescription,ItemPrice);
 
         }
 
         public void UpdateOwnedItem(OwnedItemBLL OwnedItem)
         {
 
-            _context.UpdateOwnedItem(OwnedItem.OwnedItemID, OwnedItem.OwnerID, OwnedItem.ItemDescription);
+            _context.UpdateOwnedItem(OwnedItem.OwnedItemID, OwnedItem.OwnerID, OwnedItem.ItemDescription,OwnedItem.ItemPrice);
 
         }
 
@@ -293,17 +293,17 @@ namespace BusinessLogicLayer
             proposedReturnValue = _context.ObtainCountOfItemsOwnedByUser(UserID);
             return proposedReturnValue;
         }
-        public void JustUpdateOwnedItem(int OwnedItemID, int OwnerID, string ItemDescription)
+        public void JustUpdateOwnedItem(int OwnedItemID, int OwnerID, string ItemDescription, decimal ItemPrice)
         {
 
-            _context.UpdateOwnedItem(OwnedItemID, OwnerID, ItemDescription);
+            _context.UpdateOwnedItem(OwnedItemID, OwnerID, ItemDescription,ItemPrice);
 
         }
 
         public void JustUpdateOwnedItem(OwnedItemBLL OwnedItem)
         {
 
-            _context.UpdateOwnedItem(OwnedItem.OwnedItemID, OwnedItem.OwnerID,OwnedItem.ItemDescription);
+            _context.UpdateOwnedItem(OwnedItem.OwnedItemID, OwnedItem.OwnerID,OwnedItem.ItemDescription, OwnedItem.ItemPrice);
 
         }
         #endregion

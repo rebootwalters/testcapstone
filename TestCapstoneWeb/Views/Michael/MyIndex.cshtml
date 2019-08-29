@@ -1,0 +1,91 @@
+﻿@model IEnumerable<BusinessLogicLayer.OwnedItemBLL>
+
+@{
+    ViewBag.Title = "MyIndex";
+}
+
+<h2>MyIndex</h2>
+
+<p>@Html.Partial("Paging") </p>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<p>
+    @Html.DropDownList("UserID", (IEnumerable<SelectListItem>)ViewBag.Users,
+    new { id = "DDLUsers" })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.OwnedItemID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OwnerID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ItemDescription)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ItemPrice)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EMail)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.OwnedItemID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OwnerID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ItemDescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ItemPrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EMail)
+            </td>
+            <td>
+
+                @Html.ActionLink("Details", "Details", new { id = item.OwnedItemID }) |
+                @Html.ActionLink("Michael", "Activate", new
+           {
+               id = item.OwnedItemID,
+
+           },new { @class="alertme"})
+            </td>
+        </tr>
+    }
+
+</table>
+@section scripts {
+
+    <script type="text/javascript">
+
+    $(document).ready(function(){
+
+        $('.alertme').click(function () {
+            var selectedText = $("#DDLUsers").find("option:selected").text();
+            var selectedValue = $("#DDLUsers").val();
+            var QS = "?SelectedID=" + selectedValue;
+           
+            var href = $(this).attr("href");
+            var chref = href + QS;
+            $(this).attr("href", chref);
+            debugger;
+
+        });
+
+    });
+
+    </script>
+
+}
